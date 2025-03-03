@@ -1,0 +1,505 @@
+///////////////////////////////////////////////////////////////////////////////////////////
+// status 500 ทั้งหมดคือพังหลังบ้าน
+// https://mass-serv.ddns.net/  aboutshop/createshop // post
+// ใช้เพื่อโพสร้านค้าของตัวเอง สิ่งที่ต้องใส่ 
+
+{
+ name : "",
+ address : "",
+ phone : "",
+ image : "",  // file 1 รูป  - 9 รูป บังคับว่าต้องใส่หมด
+ category : "", // 
+ details : "",
+ latitude : "", string
+ longtitude : "", string
+}
+
+บังคับให้ใส่ทั้งหมด
+// ถ้าใส่ไม่หมด status 400 { message : "string" }
+// ถ้าไม่ใส่รูป status 400 { message : "string" }
+// สำเสร็จ status 200
+
+res ที่ตอบกลับ
+{
+    "id": ,
+    "createdAt": "",
+    "name": "",
+    "address": "",
+    "phone": "",
+    "image": "",  
+    "category": "", // ที่พัก สถานที่ ร้านอาหาร ร้านค้า
+    "details": "",
+    "status": "",
+    "latitude": "",
+    "longtitude": ",
+    "userId": 
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// https://mass-serv.ddns.net/  aboutshop/editshop/:datashopId // patch
+// ใช้เพื่อแก้ไขข้อมูลร้านค้าของตัวเอง 
+
+{
+ name : "",
+ address : "",
+ phone : "",
+ image : "",  // file 1 รูป
+ category : "", // ที่พัก สถานที่ ร้านอาหาร ร้านค้า
+ details : ""
+ latitude : "", 
+ longtitude : "", 
+}
+
+res ที่ตอบกลับ
+{
+    "message": "Shop updated successfully",
+    "data": {
+        "id": ,
+        "createdAt": "",
+        "name": "",
+        "address": "",
+        "phone": "",
+        "image": "",
+        "category": "",
+        "details": "",
+        "status": "",
+        "latitude": "",
+        "longtitude": "",
+        "userId": 
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// https://mass-serv.ddns.net/  aboutshop/shoplist // get
+// ใช้ เป็น List ข้อมูลทั้งหมด หน้าละ 8 ข้อมูลทั้งหมด
+// สำเสร็จ status 200
+res ที่ตอบกลับ
+
+{
+     "pages": [ 1,2,3 ], // จำนวณหน้าที่มี 
+     "totalPages": 3,  // เอาไว้คลิกเพื่อแสดง   "shopList" ข้อมูลของแต่ละหน้า
+     "shopList": [ 
+        {
+          "id": 3,
+            "createdAt": "",
+            "name": "",
+            "address": "",
+            "phone": "",
+            "image": "",
+            "category": "",
+            "status": "",
+            "latitude": "",
+            "longtitude": "",
+            "userId": ,
+            "_count": {
+                "commentshop": 
+            }
+     ,{},{},{},{},{},{},{},{}
+        }
+     ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// https://mass-serv.ddns.net/  aboutshop/datapersonshoppost/:first_name/:last_name // get
+// params // ใช้เพื่อดูว่าคนชื่อนี้นามสกุลนี้ มีร้านไหนที่เค้าโพสบ้าง
+first_name : "",
+last_name : "",
+
+// first_name : "", lastName : "", ถ้าไม่มี Error 400 { message : "string" }
+// ถ้าไม่มีการโพสอะไร ในตารางไม่มี   status 400 { message : "string" }
+// สำเสร็จ 200
+
+res ที่ตอบกลับ
+
+[
+    {
+        "id": 21,
+        "createdAt": "2025-02-14T06:24:13.082Z",
+        "name": "ลองแก้",
+        "address": "ข้อความที่อยู่",
+        "phone": "0844445566",
+        "image": "http://localhost:8888/public/1739514253891.jpg",
+        "category": "สถานที่",
+        "details": "ข้อความที่เกี่ยวกับลายละเอียด",
+        "status": "ส่งเรื่องแล้ว",
+        "latitude": "13.650362",
+        "longtitude": "100.675973",
+        "userId": 2,
+        "user": {
+            "firstName": "asadawuth1",
+            "lastName": "paijit1"
+        },
+        "_count": {
+            "commentshop": 0
+        }
+    },{},{},{}    
+]
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// https://mass-serv.ddns.net/  aboutshop/changestatusshopid/:datashopId // patch
+// params // ใช้เพื่ออัพว่าร้านนี้อยู่ในขั่นตอนไหนแล้วให้ประชาชนได้รู้ถึงขั่นตอน
+
+datashopId : "" // num เป็นเลขและ
+ิbody 
+{
+    "status" : "" // ส่งเรื่องแล้ว กำลังเช็คเอกสาร ขอเอกสารเพิ่ม สำเสร็จ ไม่ผ่าน
+}
+// ไม่ใส่ status 400 { message : "string" }
+// shopId ไม่มีในตาราง status 400 { message : "string" }
+// status ไมใช่ ส่งเรื่องแล้ว กำลังเช็คเอกสาร ขอเอกสารเพิ่ม สำเสร็จ ไม่ผ่าน status 400 { message : "string" }
+// สำเสร็จ status 200
+res ที่ตอบกลับ 
+{
+    "data": {
+        "id": ,
+        "createdAt": "",
+        "name": "",
+        "address": "",
+        "phone": "",
+        "image": "",
+        "category": "",
+        "details": "",
+        "status": "",
+        "latitude": "",
+        "longtitude": "",
+        "userId": 
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// https://mass-serv.ddns.net/  aboutshop/alldatausershopid/:datashopId // get
+// params // ใช้เข้าดูข้อมูลร้านเป็นข้อมูลที่เข้าต่อจาก List
+   datashopId : "" // number ของเลขที่ shopId
+
+// ถ้าไม่มีไอดีร้านนั้นในตาราง status 400 { message : "string" }
+// shopId ไม่มี status 400 { message : "string" }
+// สำเสร็จ status 200
+res ที่ตอบกลับ
+{
+    "id": ,
+    "firstName": "",
+    "lastName": "",
+    "profile": ,
+    "createdAt": "",
+    "name": "",
+    "address": "",
+    "phone": "",
+    "image": "",
+    "category": "",
+    "details": "",
+    "status": "",
+    "latitude": "",
+    "longtitude": "",
+    "userId": 
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// https://mass-serv.ddns.net/  aboutshop/deletepostshopid/:datashopId // delete
+// params // ใช้สำหรับลูกค้าปิดร้านไม่ได้เปิดอีกแล้ว
+   datashopId : "" ของเลขที่ shopId
+
+// datashopId status 400 ไม่มี { message : "string" } params
+// ลบแล้ว ไม่เจอใน ตาราง status 404 ไม่มี { message : "string" }
+// สำเสร็จ
+res ที่ตอบกลับ
+{
+    "message": "Deleted Shop and associated comments successfully"
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// https://mass-serv.ddns.net/  aboutshop/alltotalapprove // get
+// แสดงตารางสรุปร้านที่ อนุมัติผ่าน
+// สำเสร็จ status 200
+res ที่ตอบกลับ
+{
+    "totalApprove": 6,
+    "totalPlace": 2,
+    "totalRest": 2,
+    "totalShop": 1,
+    "totalRestaurant": 1
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// https://mass-serv.ddns.net/  aboutshop/datatshop // get
+// ข้อมูลเฉพาะ ร้านค้า เท่านั้น
+// สำเสร็จ status 200
+
+res ที่ตอบกลับ 
+
+{
+    "pages": [1], // จำนวณหน้าที่มี ตกหน้าล่ะ 8 การ์ด หรือ 8 ข้อมูล
+    "totalPages": 1, หน้าที่เลือกเพื่อแสดง shopList
+    "shopList": [
+        {
+            "id": ,
+            "createdAt": "",
+            "name": "",
+            "address": "",
+            "phone": "",
+            "image": "",
+            "category": "ร้านค้า",
+            "details": "",
+            "status": "",
+            "latitude": "",
+            "longtitude": "",
+            "userId": ,
+            "_count": {
+                "commentshop": 0
+            },
+            "user": {
+                "firstName": "",
+                "lastName": ""
+            }
+        } , {},{},{},{},{},{},{},{}
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// https://mass-serv.ddns.net/  aboutshop/datarestaurant // get
+// ข้อมูลเฉพาะ ร้านอาหาร เท่านั้น
+// สำเสร็จ status 200
+res ที่ตอบกลับ 
+
+{
+    "pages": [1], // จำนวณหน้าที่มี ตกหน้าล่ะ 8 การ์ด หรือ 8 ข้อมูล
+    "totalPages": 1, หน้าที่เลือกเพื่อแสดง shopList
+    "shopList": [
+        {
+            "id": ,
+            "createdAt": "",
+            "name": "",
+            "address": "",
+            "phone": "",
+            "image": "",
+            "category": "ร้านอาหาร",
+            "details": "",
+            "status": "",
+            "latitude": "",
+            "longtitude": "",
+            "userId": ,
+            "_count": {
+                "commentshop": 0
+            },
+            "user": {
+                "firstName": "",
+                "lastName": ""
+            }
+        } , {},{},{},{},{},{},{},{}
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// https://mass-serv.ddns.net/  aboutshop/datarest // get
+// ข้อมูลเฉพาะ สถานที่ เท่านั้น
+// สำเสร็จ status 200
+res ที่ตอบกลับ 
+
+{
+    "pages": [1], // จำนวณหน้าที่มี ตกหน้าล่ะ 8 การ์ด หรือ 8 ข้อมูล
+    "totalPages": 1, หน้าที่เลือกเพื่อแสดง shopList
+    "shopList": [
+        {
+            "id": ,
+            "createdAt": "",
+            "name": "",
+            "address": "",
+            "phone": "",
+            "image": "",
+            "category": "สถาานที่",
+            "details": "",
+            "status": "",
+            "latitude": "",
+            "longtitude": "",
+            "userId": ,
+            "_count": {
+                "commentshop": 0
+            },
+            "user": {
+                "firstName": "",
+                "lastName": ""
+            }
+        } , {},{},{},{},{},{},{},{}
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// https://mass-serv.ddns.net/  aboutshop/datarentaplace // get
+// ข้อมูลเฉพาะ ที่พัก เท่านั้น
+// สำเสร็จ status 200
+res ที่ตอบกลับ 
+
+{
+    "pages": [1], // จำนวณหน้าที่มี ตกหน้าล่ะ 8 การ์ด หรือ 8 ข้อมูล
+    "totalPages": 1, หน้าที่เลือกเพื่อแสดง shopList
+    "shopList": [
+        {
+            "id": ,
+            "createdAt": "",
+            "name": "",
+            "address": "",
+            "phone": "",
+            "image": "",
+            "category": "ที่พัก",
+            "details": "",
+            "status": "",
+            "latitude": "",
+            "longtitude": "",
+            "userId": ,
+            "_count": {
+                "commentshop": 0
+            },
+            "user": {
+                "firstName": "",
+                "lastName": ""
+            }
+        } , {},{},{},{},{},{},{},{}
+    ]
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// https://mass-serv.ddns.net/  aboutshop/datastatusdocuments?_page={}// เลขหน้า // get
+// datastatusdocuments?_page=1  เลขของแต่ละหน้าเพื่อแสดงข้อมูล
+// สำเสร็จ status 200
+สถานะที่ส่งเรื่องแล้วท่านั้น
+res ที่ตอบกลับ 
+{
+    "pages": [
+        1
+    ],
+    "totalPages": 1,
+    "shopList": [
+        {
+            "id": ,
+            "name": "",
+            "status": "ส่งเรื่องแล้ว",
+            "user": {
+                "firstName": "",
+                "lastName": ""
+            },
+            "rowNumber": 
+        },{},{},{},{},{},{}
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// https://mass-serv.ddns.net/  aboutshop/datastatuschecking?_page={} // เลขหน้า // get
+// datastatuschecking?_page=1  เลขของแต่ละหน้าเพื่อแสดงข้อมูล
+// สำเสร็จ status 200
+สถานะที่กำลังเช็คเอกสารเท่านั้น
+res ที่ตอบกลับ 
+{
+    "pages": [
+        1
+    ],
+    "totalPages": 1,
+    "shopList": [
+        {
+            "id": ,
+            "name": "",
+            "status": "กำลังเช็คเอกสาร",
+            "user": {
+                "firstName": "",
+                "lastName": ""
+            },
+            "rowNumber": 
+        },{},{},{},{},{},{}
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// https://mass-serv.ddns.net/  aboutshop/datastatusadditional?_page={} // เลขหน้า // get
+// datastatusadditional?_page=1  เลขของแต่ละหน้าเพื่อแสดงข้อมูล
+// สำเสร็จ status 200
+สถานะที่กำลังขอเอกสารเพิ่มเท่านั้น
+res ที่ตอบกลับ 
+{
+    "pages": [
+        1
+    ],
+    "totalPages": 1,
+    "shopList": [
+        {
+            "id": ,
+            "name": "",
+            "status": "กำลังเช็คเอกสาร",
+            "user": {
+                "firstName": "",
+                "lastName": ""
+            },
+            "rowNumber": 
+        },{},{},{},{},{},{}
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// https://mass-serv.ddns.net/  aboutshop/datastatussuccess?_page={}  // เลขหน้า // get
+// datastatussuccess?_page=1  เลขของแต่ละหน้าเพื่อแสดงข้อมูล
+// สำเสร็จ status 200
+สถานะที่สำเสร็จเท่านั้น
+res ที่ตอบกลับ 
+{
+    "pages": [
+        1
+    ],
+    "totalPages": 1,
+    "shopList": [
+        {
+            "id": ,
+            "name": "",
+            "status": "ขอเอกสารเพิ่ม",
+            "user": {
+                "firstName": "",
+                "lastName": ""
+            },
+            "rowNumber": 
+        },{},{},{},{},{},{}
+    ]
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// https://mass-serv.ddns.net/  aboutshop/dataducumentnotpass?_page={}  // get
+// dataducumentnotpass?_page=1 เลขของแต่ละหน้าเพื่อแสดงข้อมูล
+// สำเสร็จ status 200
+สถานะที่ไม่ผ่านเท่านั้น
+res ที่ตอบกลับ
+{
+    "pages": [
+        1
+    ],
+    "totalPages": 1,
+    "shopList": [
+        {
+            "id": ,
+            "name": "",
+            "status": "ไม่ผ่าน",
+            "user": {
+                "firstName": "",
+                "lastName": ""
+            },
+            "rowNumber": 
+        },{},{},{},{},{},{}
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  aboutshop/datatotalallstatus"// get
+// สำเสร็จ status 200
+res ที่ตอบกลับ
+{
+    "totalStatusDocuments": ,
+    "totalStatusChecking": ,
+    "totalStatusAdditional": ,
+    "totalStatusSuccess": ,
+    "totalStatusNotPass": ,
+    "totalAllStatus": 
+}

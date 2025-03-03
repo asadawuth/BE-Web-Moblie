@@ -541,3 +541,26 @@ exports.dataPersonPassOnly = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.dataPerson = async (req, res, next) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      return next(createError("user Id is not found"), 400);
+    }
+
+    const dataPersonRequest = await prisma.requestwatchcctv.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+
+    if (!dataPersonRequest) {
+      return next(createError("Data is not found"), 400);
+    }
+
+    res.status(200).json(dataPersonRequest);
+  } catch (error) {
+    next(error);
+  }
+};

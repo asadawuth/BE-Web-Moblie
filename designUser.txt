@@ -1,0 +1,286 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// status 500 // พังจากหลังบ้านทั้งหมด
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  user/createIdEmployee"  // post
+// สมัครไอดีพนักงาน
+{
+    "firstName": "asadawuth",
+    "lastName": "paijit", 
+    "email": "taodewy@gmail.com", 
+    "phone": "0859300756", 
+    "status":  "ประชาชน"  ,
+    "password": "Asadawuth41",
+    "confirmPassword": "Asadawuth41"
+}  
+
+** ตรง status ถ้ามาจาก Mobile ให้ใส่ค่า "ประชาชน" ไว้เลยครับ
+** ที่ password ตัวพิมใหญ๋ A-Z พิมใหญ่ 1 ตัว ตัวพิมเล็ก a-z 1 ตัว ตัวเลข 0-9  1 ตัว
+
+// ข้อมูลไม่ครบถ้วน status 500  // ได้ status 200
+
+output ที่ res กลับ 
+{
+    "message": "Created successfully",
+    "idUser": {
+        "id": 4,
+        "firstName": "",
+        "lastName": "",
+        "email": "",
+        "phone": "",
+        "status": "",
+        "profile": null
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// "https://mass-serv.ddns.net/  user/login" // post
+// เข้าระบบ
+
+{
+    "emailOrMobile": "",
+    "password" : ""
+}
+
+// ไม่มีอยู่จริง { "Invalid credentials", 401}  // ผ่าน status 200
+
+** ใส่ อีเมล์หรือโทรศัพท์จากที่สมัครอย่างใดอย่างหนึ่ง
+output ที่ res กลับ 
+
+{
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzM5MjQxNTkyLCJleHAiOjIwNTQ4MTc1OTJ9.ytLcKx3Wj1YkyahkaRBgUj3kpjCNgJWtBPvw9Vgxuho",
+    "user": {
+        "id": 2,
+        "firstName": "",
+        "lastName": "",
+        "email": "",
+        "phone": "",
+        "status": "",
+        "profile": ""
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// "https://mass-serv.ddns.net/  user/getdata"  // get
+// ข้อมูลผู้ที่เข้าระบบ
+
+// ถ้าไม่มีหรือเกิดมีปัญหา 
+
+// output ที่ res กลับ { message: "User not authenticated." } status 401
+ {
+    "user": {
+        "id": 2,
+        "firstName": "asadawuth1",
+        "lastName": "paijit1",
+        "email": "taodewy1@gmail.com",
+        "phone": "0859300757",
+        "status": "ประชาชน",
+        "profile": "http://localhost:8888/public/1738241329617.jpg"
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// "https://mass-serv.ddns.net/  user/updateDataId" // patch
+// เปลี่ยนข้อมูลที่สมัคร
+
+{
+  "firstName": "",
+  "lastName": "", 
+  "email": "", 
+  "phone": ""
+}
+
+// ข้อมูลไม่ครบถ้วน status 500  
+// ไม่มีไอดีที่จะ แก้ไข 
+// ไม่มีไอดีที่จะแก้ไข "User not found" status 404
+// // ได้ status 200
+output ที่ res กลับ 
+
+{
+    "message": "Data updated successfully",
+    "updatedUser": {
+        "id": ,
+        "firstName": "",
+        "lastName": "",
+        "email": "",
+        "phone": "",
+        "status": "",
+        "profile": ""
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// "https://mass-serv.ddns.net/  user/updateProfile" // patch
+// เปลี่ยนรูปโปรไฟล์
+
+imageProfile: รูป เช่น "1739244259390.jpg"
+
+// ไม่มีรูป { message : "Profile image is required} status 400
+// ได้ { message : "Profile image updated successfully "} status 200
+
+output ที่ res กลับ 
+{
+    "message": "Profile image updated successfully",
+    "profileUrl": "https://mass-serv.ddns.net/public/1739244259390.jpg"
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// https://mass-serv.ddns.net/  user/changeProfiletoDefaultImage // patch
+// ไม่ต้องการใช้รูปโปรไฟล์
+
+// user ไม่มีอยู่จริง { message : "User not found"} status 404
+// สำเสร็จ status 200
+output ที่ res กลับ  
+{
+    "message": "Set default profile successfully."
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  user/getForDeleteIdLoginEmployee/:firstName/:lastName" // get
+// Params
+// หาไอดีพนักงานเพื่อต้องการ ลบ ตรงนี้จะเกี่ยวกับ Web เพื่อลบไอดีพนักงานที่ลาออกไปแล้ว เพื่อความปลอดภัย
+
+Params ที่ต้องใส่
+ "firstName": "",
+ "lastName": ""
+
+// ไม่มีสมัครงาน ที่ค้นหา { "Id has a not found." } status 400
+// status 200
+output ที่ res กลับ  
+{
+    "id": number,
+    "firstName": "",
+    "lastName": ""
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ลบไอดีพนักงานที่ลาออกไปแล้ว เพื่อความปลอดัยไม่ใช่คนในองค์กรไม่ควร Login เข้าระบบได้
+// "https://mass-serv.ddns.net/  user/deleteIdEmployee/:employeeIdLogin" // delete
+Params ที่ต้องใส่
+  employeeIdLogin : number
+
+// status 404 { message : "string" }  
+// สำเสร็จ status 200
+output ที่ res กลับ 
+{
+    "message": "Delete Employee Successfully"
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  user/changepassworduser" // patch
+{
+      oldPassword : "",
+      newPassword :  "",
+      confirmNewPassword : ""
+}
+// เปลี่ยนรหัสผ่าน
+
+// user ไม่มีอยู่ในตาราง status 404  { message : "string" }
+// ใส่ รหัสเก่าไม่ถูกต้อง status 400 { message: "string" }
+// status 200 สำเสร็จ
+output ที่ res กลับ 
+{
+    "message": "Password changed successfully",
+    "user": {
+        "id": 2,
+        "firstName": "",
+        "lastName": "",
+        "status": "",
+        "profile": 
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  user/changeemail" // patch
+// เปลี่ยนอีเมลล์
+{
+     "oldEmail": "",
+     "newEmail":  "",
+     "confirmNewEmail": ""
+}
+
+// ไม่มีเเมลเก่า ยืนยัน เมลใหม่ไม่ตรงกัน status 400 { message: "string" }
+// status 200 สำเสร็จ
+output ที่ res กลับ
+{
+    "message": "Email changed successfully"
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  user/verifyemail" // post
+// ขั่นตอนที่ 1 ขอการขอเปลี่ยนรหัสผ่าน จากการลืมรหัส
+// ส่งเมลที่สมัครให้
+{
+    "email": ""
+}
+
+// ไม่มี user status 400 { message : "string" }
+// ไม่กรองข้อมูล user status 400 { message : "string" }
+** มีเมลล์ที่สมัคร status 200
+output ที่ res กลับ
+{
+    "id": ,
+    "email": ""
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  user/createotp" // post
+// ขั่นตอนที่ 2 ส่ง OTP
+
+// ไม่มี user status 400 { message : string }
+// สำเสร็จ status 200 { message : "string }
+// ส่งเมล
+{
+    "email": ""
+}  
+output ที่ res กลับ
+{
+    "message": "Database has an email otp for user",
+    "user": {
+        "id": ,
+        "email": ""
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/   verifyotp" // post
+// ขั่นตอนที่ 3 เราจะได้ รหัส OTP 1-4 ตัว ส่งเข้ามาในเมลล์ กรองให้ตรงกับ รหัสที่เราได้
+{
+    {
+  "id": 1, 
+  "otp": ""
+    }
+}
+** id จับค่าเอา
+// ไม่สำเสร็จ status 400 { message : "string"}
+// สำเสร็จ status 200 
+output ที่ res กลับ 
+{
+    "user": {
+        "id": 1,
+        "message": "OTP verified successfully"
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  user/resetpassword // patch
+// ขั่นตอนที่ 4 เปลี่ยนรหัสผ่าน 
+{
+     "id": ,
+     "newPassword":  "",
+     "confirmPassword": ""
+}
+
+// ไม่มีการส่งอะไรมา status 400
+// กรองรหัสใหม่ยืนยันรหัสใหม่ไม่ตรงกัน status 400
+
+output ที่ res กลับ 
+{
+    "message": "Password reset successfully"
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

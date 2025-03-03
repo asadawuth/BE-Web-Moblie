@@ -21,7 +21,7 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
-);
+); 
 
 app.use("/public", express.static("public"));
 app.use("/uploads", range({ accept: "bytes" }), express.static("uploads"));

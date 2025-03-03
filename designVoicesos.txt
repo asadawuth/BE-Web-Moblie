@@ -1,0 +1,364 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// status 500 ทุกตัวที่แสดง คือ พังที่ หลังบ้าน
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/ voicesos/createdidsosvoice" // post
+// โพสคำขอดูกล้อง cctv ในพื้นที่
+// userId ไม่มีจริง status 400 { message : "string"}
+// ไม่ใส่ latitude longitude status 400 { message : "string" }
+// สำเสร็จ status 200
+
+สิ่งที่ต้อง ยิงไป
+{
+     audioFile,   file เป็น file เสียง
+     latitude,
+     longtitude,
+}
+
+สิ่งที่ res ตอบกลับมา
+
+{
+    "id": ,
+    "file": "",
+    "status": "แจ้ง",
+    "latitude": "",
+    "longtitude": "",
+    "createdAt": "",
+    "updatedAt": "",
+    "userId": ,
+    "user": {
+        "firstName": "",
+        "lastName": "",
+        "phone": ""
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/ voicesos/editsdataidsosvoice/:sosVoiceId" // patch
+// Params 
+
+// ไม่มีไอดีที่จะแก้ไขในตาราง status 400 { message : "string" }
+// ไม่มีไอดีที่ยืนยันล็อคอิน status 400 { message : "string" }
+// ไอดีคนโพส ไม่ตรงกับ userId ในตาราง sosvoiceorvdo 404 { message : "string" }
+// สำเสร็จ 200
+
+สิ่งที่ต้องส่ง 
+{
+    audioFile : "", // บังคับใส่หมด
+    latitude : "",  // บังคับใส่หมด
+    longtitude : "", // บังคับใส่หมด
+}
+
+สิ่งที่ response ตอบกลับมา
+{
+    "updatedData": {
+        "id": ,
+        "file": "",
+        "status": "",
+        "latitude": "",
+        "longtitude": "",
+        "createdAt": "",
+        "updatedAt": "",
+        "userId": 
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/ voicesos/updatestatusidsosvoice/:sosVoiceId" // patch
+// Params เลข Id ของตาราง sosvoiceorvdo
+// ไม่มี id ในตาราง sosvoiceorvdo status 400 { message : "string" }
+// status ถ้าไม่ใส่ตามเงื่อนไข 5 สถานะนี้ จะ status 400 { message : "string"}
+
+สิ่งที่ต้องส่ง 
+{
+    status : "" ,   "แจ้ง","รับแจ้งแล้ว","กำลังดำเนินการ",จัดการเสร็จสิ้น,ยกเลิก
+}
+
+สิ่งที่ response กลับมา
+
+{
+    "data": {
+        "id": ,
+        "file": "",
+        "status": "",
+        "latitude": "",
+        "longtitude": "",
+        "createdAt": "",
+        "updatedAt": "",
+        "userId": 
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/ voicesos/listalldatapaginationsosvoice" // get
+// สำเสร็จ stats 200
+// สิ่งที่หน้าบ้านต้องทำ pages แสดง ว่ามีอีกหน้า
+// totalPages ใช้เพื่อ เข้าถึงข้อมูล เว็ปนั้นๆ หน้านั้นๆ
+
+{
+    "pages": [
+        1,
+        2
+    ],
+    "totalPages": 2,
+    "allData": [
+        {
+            "id": 31,
+            "file": "http://localhost:8888/public/1739848527172.wav",
+            "status": "จัดการเสร็จสิ้น",
+            "latitude": "13.650362",
+            "longtitude": "100.67598",
+            "userId": 1,
+            "user": {
+                "firstName": "asadawuth",
+                "lastName": "paijit",
+                "phone": "0859300756"
+            },
+            "createdAt": "2025-02-18T03:15:25.145Z",
+            "updatedAt": "2025-02-18T04:28:48.034Z",
+            "type": "อัพเดทเมื่อ",
+            "time": "2025-02-18T04:28:48.034Z",
+            "num": 1
+        },{},{},{},{},{},{},{},{},{}
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/ voicesos/datapersonsospost/:firstName/:lastName //get
+// Params  firstName lastName
+// ไม่มี firstName lastName ในตาราง status 4000 { message : "string" }
+
+สิ่งที่ต้องใส่
+
+{
+   firstName : , 
+   lastName : , 
+}
+
+สิ่งที่ตอบกลับมา
+
+{
+    {
+    "allDataPreson": [
+        {
+            "id": ,
+            "file": "",
+            "status": "",
+            "latitude": "",
+            "longtitude": "",
+            "userId": 2,
+            "user": {
+                "firstName": "",
+                "lastName": "",
+                "phone": ""
+            },
+            "createdAt": "",
+            "updatedAt": "",
+            "type": "",
+            "time": "",
+            "num": 
+        },
+    ]
+}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/ voicesos/totalallstatussosvoice //get
+// status 200 สำเสร็จ 
+
+{
+    "reported": 9,
+    "acknowledged": 5,
+    "inProgress": 6,
+    "completed": 7,
+    "canceled": 4,
+    "allStatus": 31
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/ voicesos/alldatasosvocierstatusequestonly //get 
+//  voicesos/alldatasosvocierstatusequestonly?_page=1
+// status 200 สำเสร็จ  
+
+{
+    "pages": [
+        // จำนวณหน้า
+    ],
+    "totalPages": ,  // จำนวณหน้าที่ แสดง allData หน้า 2= 1-8  หน้า 1 = 9-16
+    "allData": [
+        {
+            "id": 
+            "file": "",
+            "status": "แจ้ง",
+            "latitude": "",
+            "longtitude": "",
+            "userId": ,
+            "user": {
+                "firstName": "",
+                "lastName": "",
+                "phone": ""
+            },
+            "createdAt": "",
+            "updatedAt": "",
+            "type": "",
+            "time": "",
+            "num": 
+        },{},{},{},{},{},{},{},{}
+    ]
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/ voicesos/alldatasosvoicestatusacknowledgedonly //get
+//  voicesos/alldatasosvoicestatusacknowledgedonly?_page=
+// status 200 สำเสร็จ 
+
+{
+    "pages": [
+        1
+    ],
+    "totalPages": 1,
+    "allData": [
+        {
+            "id": 6,
+            "file": "รับแจ้งแล้ว
+            "status": "",
+            "latitude": "",
+            "longtitude": "",
+            "userId": 3,
+            "user": {
+                "firstName": "",
+                "lastName": "",
+                "phone": ""
+            },
+            "createdAt": "",
+            "updatedAt": "",
+            "type": "",
+            "time": "",
+            "num": 
+        },{},{},{},{},{},{},{},{}]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/ voicesos/alldatasosvoicestatusinprogress //get
+// voicesos/alldatasosvoicestatusinprogress?_page=1
+// status 200 สำเสร็จ 
+
+{
+    "pages": [
+        1
+    ],
+    "totalPages": 1,
+    "allData": [
+        {
+            "id": ,
+            "file": "",
+            "status": "กำลังดำเนินการ",
+            "latitude": "",
+            "longtitude": "",
+            "userId": 3,
+            "user": {
+                "firstName": "",
+                "lastName": "",
+                "phone": ""
+            },
+            "createdAt": "",
+            "updatedAt": "",
+            "type": "",
+            "time": "",
+            "num": 1
+        },{},{},{},{},{},{},{},{},{}
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/ voicesos/alldatasosvicestatuscompleted //get
+// voicesos/alldatasosvicestatuscompleted?_page=1
+// status 200 สำเสร็จ 
+
+{
+    "pages": [
+        1
+    ],
+    "totalPages": 1,
+    "allData": [
+        {
+            "id": ,
+            "file": "",
+            "status": "จัดการเสร็จสิ้น
+            "latitude": "",
+            "longtitude": "",
+            "userId": 3,
+            "user": {
+                "firstName": "",
+                "lastName": "",
+                "phone": ""
+            },
+            "createdAt": "",
+            "updatedAt": "",
+            "type": "",
+            "time": "",
+            "num": 1
+        },{},{},{},{},{},{},{},{},{}
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/ voicesos/alldatasosviocestatuscanceled //get
+// voicesos/alldatasosviocestatuscanceled?_page=1
+// status 200 สำเสร็จ 
+
+{
+    "pages": [
+        1
+    ],
+    "totalPages": 1,
+    "allData": [
+        {
+            "id": ,
+            "file": "",
+            "status": "ยกเลิก"
+            "latitude": "",
+            "longtitude": "",
+            "userId": 3,
+            "user": {
+                "firstName": "",
+                "lastName": "",
+                "phone": ""
+            },
+            "createdAt": "",
+            "updatedAt": "",
+            "type": "",
+            "time": "",
+            "num": 1
+        },{},{},{},{},{},{},{},{},{}
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/ /documentsrequestcctv/alldatapersonrander //get
+// userId = req.user?.id; ถ้าไอดีไม่มีจริง  { message : "string" } status 400 พังหน้าบ้าน
+// dataPersonRequest 
+// status 200 สำเสร็จ 
+
+res ที่ตอบลับมา
+// 
+[
+    {
+        "id": 47,
+        "firstName": "กไกไกไกไหไ",
+        "lastName": "ดดไดไดกไก",
+        "tel": "0859300756",
+        "nationalId": "1103300070648",
+        "numDocument": "2244/26",
+        "createdAt": "2025-02-20T04:42:59.585Z",
+        "updatedAt": "2025-02-20T06:10:38.059Z",
+        "point": "จุดที่ 3 กล้องที่ 222",
+        "status": "ผ่าน",
+        "remark": null,
+        "image": "http://localhost:8888/public/1740026586033.jpg",
+        "userId": 1
+    },{},{},{},{},{},{},{},{},{},{},
+]

@@ -1,0 +1,150 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  commentsshop/createcomment/:datashopId" // post
+// คอมเม้นต์ ร้านค้า
+
+// userId ไม่มี ในตาราง status 400 { message : "string" }
+// datashopId ไม่มี ในตาราง status 400 { message : "string" }
+// comment , score บังคับต้องใส่ status 400 { message : "string" }
+// สำเสร็จ status 200
+
+{
+   comment : comment,  // string //ต้องใส่ ไม่ใส่ status 400 { message : "string" }
+   score : Number(score), // number //ต้องใส่ ไม่ใส่ status 400 { message : "string" }
+   image : , // files อัพได้สูงสุด 6 รูป
+   ///////////////////////////////////////////////////////////////////////
+   userId : userId,   // ไม่ต้องใส่
+   datashopId : Number(datashopId),  // เลขของร้านที่คอมเม้น // ไม่ต้องใส่  
+}
+
+สิ่งที่ Respons ส่ง กลับ 
+
+{
+  id: ,
+  comment : "" ,  string
+  image : "{},{},{},{},{},{}", string มีได้ 6 รูป 
+  score : 3, number
+  createdAt : "2025-02-17T01:17:56.735Z",  // ตรงนี้ไม่ต้องกรอง
+  userId : ,  // เลขไอดีเจ้าของร้าน
+  datashopId: , // เลขไอดีร้าน
+   user : {
+        id : ,  // เลขไอดีคนคอมเม้นร้าน
+        firstName : "", // ชื่อจริงคนคอมเม้น
+        lastName : "", // นามสกุลคนคอมเม้น
+        profile : "" // โปรไฟล์คนคอมเม้นต์
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  commentsshop/datacommentinshopid/:datashopId/:commentId" // get
+// Param datashopId commentId ข้อมูลเก่าแสดงก่อนที่จะแก้ไขคอมเม้นในร้านค้า
+// userId คนที่ get คนร่ะ userId status 400 { message : "string" }
+// shopId commentId ไม่มีจริงในตาราง status 400 { message : "string" }
+// สำเสร็จ status 200
+
+สิ่งที่ Response กลับมา
+
+{
+     id : ,
+     comment : "" ,  string
+     image : "{},{},{},{},{},{}", string มีได้ 6 รูป 
+     score : 3, number
+     createdA : "2025-02-17T01:17:56.735Z",  // ตรงนี้ไม่ต้องกรอง
+     userId : ,
+     datashopId: ,
+     user : {
+        id : ,
+        firstName : "",
+        lastName : "",
+        profile : ""
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  commentsshop/editsdatacommentid/:datashopId/:commentId" // patch
+// แก้ไขคอมเม้นต์ร้านค้า กรณีโพสผิด หรือตรงไหนไม่ถูกใจอยากจะโพสเพิ่ม
+// userId ไม่มี status 400 { message : "string" }
+// shopId ไม่มี status 400 { message : "string" }
+// commentId ไม่มี status 400 { message : "string" }
+// สำเสร็จ status 200
+
+{
+ comment : "",  // string
+ image   : "", // files
+ score   : "",  // number
+}
+
+สิ่งที่ response ตอบกลับมา
+
+{
+    data : {
+         id : ,
+         comment : "" ,  string
+         image : "{},{},{},{},{},{}", string มีได้ 6 รูป 
+         score  3, number
+         createdAt : "2025-02-17T01:17:56.735Z", // ไม่ต้องใส่
+         userId : 1, // ไม่ต้องใส่
+         datashopId : 1, // ไม่ต้องใส่
+         user : {
+            id : , // เลขไอดีคนคอมเม้นร้าน
+            firstName : "",  // ชื่อจริงคนคอมเม้น
+            lastName : "", // นามสกุลคนคอมเม้น
+            profile : "" // โปรไฟล์คนคอมเม้นต์
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  commentsshop/datalistinshopid/:datashopId" // get
+// Param ข้อมูลคอมเม้นต์ร้านนั้นๆ
+// datashopId ไม่มี status 400 { message : "string" }
+// userId ที่ขอข้อมูลไม่มีในตาราง หรือ ไม่ได้ผ่านการ Login  status 400 { message : "string"}
+// สำเสร็จ 200
+สิ่งที่ response กลับมา
+
+[
+    {
+        id : ,
+        comment : "",
+        image : "",  // split แล้ว map ไปอีกรอบ  [{},{},{}]
+        score : ,
+        createdAt : "",
+        userId : ,
+        datashopId : ,
+        user : {
+            id : ,
+            firstName : "",
+            lastName : "",
+            profile : ""
+        }
+    },
+    {
+        id : ,
+        comment : "",
+        image : "",  // split แล้ว map ไปอีกรอบ  [{},{},{}]
+        score : ,
+        createdAt : "",
+        userId : ,
+        datashopId : ,
+        user : {
+            id : ,
+            firstName : "",
+            lastName : "",
+            profile : ""
+        },{},{},{}
+    }
+]
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  commentsshop/deletecommentid/:datashopId/:commentId" // delete
+// ข้อมูลคอมเม้นร้านนั้นๆ ต้องเป็นคนโพสถึงจะลบได้
+// Param datashopId เลขของไอดีร้าน commentId เลขของไอดีคอมเม้นต์
+// dataShopId และ commentId ไม่มีในตาราง status 400 { message : "string" }
+// userId ไม่มี ต้องเป็น userId ที่โพส ถึงจะลบโพสได้
+// สำเสร็จ 200
+{
+    "message": "Comment deleted successfully"
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

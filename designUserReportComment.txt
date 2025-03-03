@@ -1,0 +1,145 @@
+/////////////////////////////////////////////////////////////////////////////////////
+// status 500 คือพังจากหลังบ้านหมด
+// // "https://mass-serv.ddns.net/  commentinreportid/:reportId" // post
+// params ใช่เพื่อคอมเม้นท์
+{
+text : "",
+image : "",  flie
+video : "", flie
+}
+// user ที่มาคอมเม้นไม่มีอยู่ในตาราง status 400 { message : "string" }
+// reportId ไม่มีอยู่ในตาราง status 400 { message : "string" }
+// รูป วีดี ข้อความ บังคับให้โพส อย่างใดอย่างหนึ่ง ไม่โพสไรเลย status 400 { message : "string" }
+// สำเสร็จ status 200
+สิ่งที่ตอบกลับมา
+{
+    "id":,
+    "text": "",
+    "image": "",
+    "createdAt": "2025-02-14T02:40:24.404Z",
+    "status": "",
+    "vdo": "",
+    "userId": ,
+    "reportId": ,
+    "user": {
+        "id": ,
+        "firstName": "",
+        "lastName": "",
+        "profile": ,
+        "status": ""
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+// // "https://mass-serv.ddns.net/  datalistincommentreportid/:reportId" // get
+// params ใช้เพื่อดูคอมเม้นท์ทั้งหมด
+
+reportId : "" // Num เลขของ ReportId
+
+// reportId ไม่มีในตาราง status 400 { message : "string" }
+// userId   ไม่มีในตาราง status 400 { message : "string" }
+// สำเสร็จ status 200
+
+สิ่งที่ตอบกลับมา
+[
+    {
+        "id": ,
+        "text": "",
+        "image": "",
+        "createdAt": "",
+        "status": "จัดการเสร็จสิ้น",
+        "vdo": "",
+        "userId": 2,
+        "reportId": 1,
+        "user": {
+            "id": 2,
+            "firstName": "",
+            "lastName": "",
+            "profile": ,
+            "status": ""
+        },
+        "postuserreport": {
+            "status": ""
+        }
+    },
+    {
+        "id": ,
+        "text": "",
+        "image": "",
+        "createdAt": "",
+        "status": "",
+        "vdo": "",
+        "userId": 2,
+        "reportId": 1,
+        "user": {
+            "id": 2,
+            "firstName": "",
+            "lastName": "",
+            "profile": ,
+            "status": ""
+        },
+        "postuserreport": {
+            "status": ""
+        }
+    },
+    {},
+    {},
+]
+
+/////////////////////////////////////////////////////////////////////////////////////
+// // "https://mass-serv.ddns.net/  datacommentinreportid/:reportId/:commentId" // get
+// params ใช้เพื่อแสดงข้อมูลเก่าก่อนที่จะแก้ไข
+
+reportId : "", //  เป็น number
+commentId : "" // เป็น number
+
+// reportId ไม่มีในตาราง status 400 { message : "string" }
+// commentId ไม่มีในตาราง status 400 { message : "string" }
+// userId   ไม่มีในตาราง status 400 { message : "string" }
+// สำเสร็จ status 200
+สิ่งที่ตอบกลับมา
+{
+    "id": 1,
+    "text": "testtext",
+    "image": "http://localhost:8888/public/1739500832270.jpg",
+    "vdo": "http://localhost:8888/public/1739500824554.mp4"
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+// // "https://mass-serv.ddns.net/  editscommentinreportid/:reportId/:commentId" // patch
+// params ใช้เพื่อแก้ไขข้อมูลที่คอมเม้นลงไป
+
+reportId : "", //  เป็น number
+commentId : "" // เป็น number
+
+// ไม่มี reportId ในตาราง status 400  { message : "string" }
+// ไม่มี commentId ในตาราง status 400  { message : "string" }
+// สำเสร็จ status 200 
+
+** บังคับ ต้องระบุ อย่างใดอย่างนึง
+สิ่งที่ตอบกลับมา
+{
+    "id": ,
+    "text": "",
+    "image": "",
+    "vdo": ""
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+// // "https://mass-serv.ddns.net/  commentidreport/deletecommentinuserreportid/:reportId/:commentId"  // delete
+// params
+reportId : "", //  เป็น number
+commentId : "" // เป็น number
+
+// ไม่มี reportId ในตาราง status 400  { message : "string" }
+// ไม่มี commentId ในตาราง status 400  { message : "string" }
+// ไม่มี userId ในตาราง status 400  { message : "string" }
+// สำเสร็จ status 200 
+
+สิ่งที่ตอบกลับมา
+{
+    "message": "Comment deleted successfully"
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

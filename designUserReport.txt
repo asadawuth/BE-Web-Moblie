@@ -1,0 +1,393 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ***** ทุกตัวที่ status 500 พังจากหลังบ้านทั้งหมด ***** //
+// "https://mass-serv.ddns.net/  boardreport/reportpost" // post
+// key ที่ใช้ในการ โพส
+{
+texttitle : "",
+image : "",  // files ลงได้1-9 หรือ ไม่ลงก็ได้ 
+textstory : "",
+map : "",  ทำเป็น "","" lat,long
+video : "",  // file แบบไฟล์เดียว
+}
+
+// ไม่ระบุข้อความ status 400 { message : "string"}
+// สำเสร็จ status 200
+output ที่ res กลับ 
+{
+    "data": {
+        "id": ,
+        "texttitle": "", ต้องกรอก
+        "textstory": "",
+        "images": [],
+        "map": "",
+        "video": ,
+        "status": "",
+        "createdAt": "",
+        "user": {
+            "id": 1,
+            "firstName": "",
+            "lastName": "",
+            "profile": ""
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  boardreport/reportslist?_page={}" // get
+// ข้อมูลโพสทั้งหมด ใช้กับ Web
+output ที่ res กลับ 
+// สำเสร็จ status 200
+{
+"pages": [
+        1,
+        2,
+        3
+    ],
+    "totalPages": 1,
+        "shopList": [ 
+            {
+            "id": ,
+            "createdAt": "",
+            "name": "",
+            "address": "",
+            "phone": "",
+            "image": "",
+            "category": "",
+            "status": "",
+            "latitude": ",
+            "longtitude": "",
+            "userId": ,
+            "_count": {
+                "commentshop": 0
+            }
+        },
+
+        ]
+}
+
+// pages คือ จำนวณของหน้า
+// totalPages คือ จำนวณ ที่เราอยู่หน้านั้นเรียกข้อมูลหน้านั้น 
+// shopList [{},{}] ข้อมูลที่ถูกเรียกจาก totalPages
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  boardreport/AllDataInComment/:reportId" // get
+// ดูข้อมูลทั้งหมดของ โพส
+// ลักษณะ params
+{
+ reportId :  เลขของหัวโพส
+}
+
+// ไม่มีไอดี status 400 { message : "string" }
+// สำเสร็จ status 200 
+
+output ที่ res กลับ 
+{
+    "id": ,
+    "texttitle": "",
+    "image": ,
+    "textstory": "",
+    "map": "",
+    "vdo": ,
+    "status": "",
+    "createdAt": "",
+    "updatedAt": "",
+    "userId": ,
+    "firstName": "",
+    "lastName": "",
+    "profile": ""
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  boardreport/datapersonpost/:first_name/:last_name"     // get
+// ดูข้อมูลว่าคนๆนี้โพส หัวข้ออะไรบ้าง
+// // ลักษณะ params first_name  และ last_name 
+
+// ไม่มีข้อมูลชื่อ status 400  { message : "string" }
+// ไม่มีข้อมูลโพส status 404 { message : "string" }
+output ที่ res กลับ  
+[
+    {
+        "id": ,
+        "texttitle": "",
+        "image": ,
+        "textstory": "",
+        "map": "",
+        "vdo": ,
+        "status": "",
+        "userId":,
+        "user": {
+            "firstName": "",
+            "lastName": "",
+            "profile": ""
+        },
+        "_count": {
+            "commentinpostuserreport": 
+        },
+        "createdAt": "",
+        "updatedAt": "",
+        "type": "โพสเมื่อ",
+        "time": ""
+    }
+]
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  boardreport/deleteiduserreport/:reportId"   // delete
+// ลบไอดีที่ประชาชนโพส
+   reportId : ตามด้วยเลขไอดี
+// ส่งไม่ตรงกับการ validate  status 400 { message : "string" }   
+// ไม่มีไอดีในตารางให้ลบ status 404 { message: "string" }
+// สำเสร็จ 200
+output ที่ res กลับ    
+{
+    "message": "Report, associated comments, and files deleted successfully"
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  boardreport/changestatusreport/:reportId"   // patch
+// แก้ไขสถานะว่าถึงขั่นตอนไหนแล้ว
+Parem 
+reportId = เลขของไอดี
+{
+    "status" : ""
+}
+
+// กดปล่าวๆไม่ใส่สถานะ status 400 { message : "string" }
+// ไม่มีไอดีที่จะเปลี่ยนสถานะ ใน ตาราง status 404 { message : "string" }
+มี5สถานะ
+output ที่ res กลับ  
+{
+    "data": {
+        "id": ,
+        "texttitle": "",
+        "image": ,
+        "textstory": "",
+        "map": "",
+        "vdo": ,
+        "status": "",
+        "createdAt": "",
+        "updatedAt": "",
+        "userId": 
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  boardreport/changedataidreport/:reportId"   // patch
+// แก้ไขข้อมูลที่โพส 
+ิbody 
+{
+    texttitle : "",
+    image : "",
+    textstory : "",
+    map : "",  ทำเป็น "","" lat,long,
+    video: "",
+}
+image ใช้ files  ลงได้ 1-9 รูป หรือไม่ลงเลย
+video ใช้ file
+แก้ เฉพาะ สิ่งที่ต้องการอยากแก้
+
+// ข้อมูลไม่ตรงกับที่ validate status 400 { message : "string" }
+// ไม่มีไอดีที่จะแก้ไขในตาราง status 404 { message : "string" }
+// สำเสร็จ 200
+
+output ที่ res กลับ   
+{
+    "message": "Report updated successfully",
+    "data": {
+        "id": ,
+        "texttitle": "",
+        "image": "",
+        "textstory": "",
+        "map": "",
+        "vdo": ,
+        "status": "",
+        "createdAt": "",
+        "updatedAt": "",
+        "userId": 
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  boardreport/countallstatusreport"  // get
+// ผลรวมทุกสเคตัส
+
+// สำเสร็จ status 200
+output ที่ res กลับ 
+{
+    "reported": ,
+    "acknowledged": ,
+    "inProgress": ,
+    "completed": ,
+    "canceled": ,
+    "allStatus": 
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  boardreport/userreporteddata?_page=1" // get
+// เอาเฉพาะ ข้อมูล สถานะ แจ้ง
+
+// สำเสร็จ status 200
+output ที่ res กลับ 
+{
+    "pages": [],   // จำนวณหน้า
+    "totalPages": 1, // หน้าที่แสดง
+        "reportList": [
+        {
+            "id": ,
+            "texttitle": "",
+            "image": ,
+            "textstory": "",
+            "map": "",
+            "vdo": ,
+            "status": "",
+            "userId": ,
+            "user": {
+                "firstName": "",
+                "lastName": "",
+                "profile": 
+            },
+            "_count": {
+                "commentinpostuserreport": 
+            },
+            "createdAt": "",
+            "updatedAt": "",
+            "type": "โพสเมื่อ",
+            "time": ""
+        },
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  boardreport/userreportstatusacknowledged?_page=1" // get
+// เอาเฉพาะ ข้อมูล สถานะ รับแจ้งแล้ว 
+
+// สำเสร็จ status 200
+output ที่ res กลับ 
+{
+    "pages": [],   // จำนวณหน้า
+    "totalPages": 1, // หน้าที่แสดง
+        "reportList": [
+        {
+            "id": ,
+            "texttitle": "",
+            "image": ,
+            "textstory": "",
+            "map": "",
+            "vdo": ,
+            "status": "",
+            "userId": ,
+            "user": {
+                "firstName": "",
+                "lastName": "",
+                "profile": 
+            },
+            "_count": {
+                "commentinpostuserreport": 
+            },
+            "createdAt": "",
+            "updatedAt": "",
+            "type": "โพสเมื่อ",
+            "time": ""
+        },
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  boardreport/userreportstatusinprogress?_page=1" // get
+// เอาเฉพาะ ข้อมูล สถานะ กำลังดำเนินการ
+
+// สำเสร็จ status 200
+output ที่ res กลับ 
+{
+    "pages": [],   // จำนวณหน้า
+    "totalPages": 1, // หน้าที่แสดง
+        "reportList": [
+        {
+            "id": ,
+            "texttitle": "",
+            "image": ,
+            "textstory": "",
+            "map": "",
+            "vdo": ,
+            "status": "",
+            "userId": ,
+            "user": {
+                "firstName": "",
+                "lastName": "",
+                "profile": 
+            },
+            "_count": {
+                "commentinpostuserreport": 
+            },
+            "createdAt": "",
+            "updatedAt": "",
+            "type": "โพสเมื่อ",
+            "time": ""
+        },
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  boardreport/userreportstatuscompleted?_page=1" // get
+// เอาเฉพาะ ข้อมูล สถานะ สำเสร็จ
+
+// สำเสร็จ status 200
+output ที่ res กลับ 
+{
+    "pages": [],   // จำนวณหน้า
+    "totalPages": 1, // หน้าที่แสดง
+        "reportList": [
+        {
+            "id": ,
+            "texttitle": "",
+            "image": ,
+            "textstory": "",
+            "map": "",
+            "vdo": ,
+            "status": "",
+            "userId": ,
+            "user": {
+                "firstName": "",
+                "lastName": "",
+                "profile": 
+            },
+            "_count": {
+                "commentinpostuserreport": 
+            },
+            "createdAt": "",
+            "updatedAt": "",
+            "type": "โพสเมื่อ",
+            "time": ""
+        },
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/  boardreport/userreportstatuscanceled?_page=1" // get
+// เอาเฉพาะ ข้อมูล สถานะ ยกเลิก
+
+// สำเสร็จ status 200
+output ที่ res กลับ 
+{
+    "pages": [],   // จำนวณหน้า
+    "totalPages": 1, // หน้าที่แสดง
+        "reportList": [
+        {
+            "id": ,
+            "texttitle": "",
+            "image": ,
+            "textstory": "",
+            "map": "",
+            "vdo": ,
+            "status": "",
+            "userId": ,
+            "user": {
+                "firstName": "",
+                "lastName": "",
+                "profile": 
+            },
+            "_count": {
+                "commentinpostuserreport": 
+            },
+            "createdAt": "",
+            "updatedAt": "",
+            "type": "โพสเมื่อ",
+            "time": ""
+        },
+    ]
+}

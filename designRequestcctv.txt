@@ -1,0 +1,396 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// status 500 ทุกตัวที่แสดง คือ พังที่ หลังบ้าน
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/documentsrequestcctv/documentsrequestcctv"  // post
+// หน้าบ้าน userId ที่อยู่ในตรารางไม่มี หรือ ไม่มี userId นี้ status 400 { message : "string" }
+// userId ไม่มีในตาราง status 400 { message : "string" }
+// ถ้าใส่ไม่ครบ status 400 { message : "string" }
+// สำเสร็จ status 200
+
+สิ่งที่ต้องส่ง 
+{
+    firstName : "", //string //ต้องใส่
+    lastName : "", //string //ต้องใส่
+    tel : "", //string //ต้องใส่
+    nationalId : "", //string //ต้องใส่
+    numDocument : "", //string //ต้องใส่
+    point : "", //string //ต้องใส่
+    status : "", //string //ต้องใส่
+    image : "",  // File //ต้องใส่
+}
+
+response  สิ่งที่ตอบกลับ
+
+{
+    "id": ,
+    "firstName": "",
+    "lastName": "",
+    "tel": "",
+    "nationalId": "",
+    "numDocument": "",
+    "createdAt": "",
+    "updatedAt": "",
+    "point": "",
+    "status": "",
+    "remark": ,
+    "image": "",
+    "userId": 
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/documentsrequestcctv/editdatadocumentsforrequestwatchcctv/:requestId"  // patch
+// ใช้เพื่ออัพเดท เปลี่ยนแปลงข้อมูลต่างๆในการขอ ดู กล้องจากหน่วยงาน
+// requestId ไม่มีอยู่จริงๆ status 400 { message : "string" }
+// requestIdcctv ไม่มีใน ตาราง status 400 { message : "string" }
+// status 200
+
+สิ่งที่ต้องส่ง 
+
+{
+    "message": "Document updated successfully",
+    "data": {
+        "id": ,
+        "firstName": "",
+        "lastName": "",
+        "tel": "",
+        "nationalId": "",
+        "numDocument": "",
+        "createdAt": "",
+        "updatedAt": "",
+        "point": "",
+        "status": "",
+        "remark": ,
+        "image": "",
+        "userId": 
+    }
+}
+
+response 
+
+{
+    "message": "Document updated successfully",
+    "data": {
+        "id": 47,
+        "firstName": "",
+        "lastName": "",
+        "tel": "",
+        "nationalId": "",
+        "numDocument": "",
+        "createdAt": "",
+        "updatedAt": "",
+        "point": "",
+        "status": "",
+        "remark": ,
+        "image": "",
+        "userId": 
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/documentsrequestcctv/changestatusrequestwatchcctv/:requestId"  // patch
+// แก้ไขสถานะ Params requestId จับค่าไอดีของตารางนั้นๆ
+// Params requestId ไม่มีในตาราง status 400 { message : "string" }
+// requestId ไม่มีในตาราง requestwatchcctv status 404 { message : "string" }
+// status 200
+
+สิ่งที่ต้องส่ง
+
+{
+    "status" : ""  // สิ่งที่ต้องเลือกส่ง ยื่นเอกสาร,ผ่าน,ไม่ผ่าน,รวม
+}  
+
+response ที่ตอบกลับมา 
+
+{
+    "message": "Status updated successfully",
+    "data": {
+        "id": ,
+        "firstName": "",
+        "lastName": "",
+        "tel": "",
+        "nationalId": "",
+        "numDocument": "",
+        "createdAt": "",
+        "updatedAt": "",
+        "point": "",
+        "status": "",
+        "remark": ,
+        "image": "",
+        "userId": 
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/documentsrequestcctv/sendtextcassdocumentnotpass/:requestId"  // get
+// กรณีหน่วยงานไม่ให้ผ่าน เค้าจะดูว่าเพราะอะไรขาดเอกสารอะไร
+// Params :requestId ไอดีที่แก้ไข ไม่มีอยู่จริง status 400 { message : "string" }
+// id ในตาราง requestwatchcctv status 404 { message : "string"}
+// remark กดเล่นๆ โดยที่ไม่พิมอะไร status 400 { message : "string"}
+// สำเสร็จ status 200
+// สิ่งที่ต้องส่ง
+
+{
+ "remark" : "ใบประชาชนไม่มีอยู่จริงล้อเล่นๆ"
+}
+
+ส่งที่ respons ตอบกลับมา
+
+{
+    "message": "Remark updated successfully",
+    "data": {
+        "id": ,
+        "firstName": "",
+        "lastName": "",
+        "tel": "",
+        "nationalId": "",
+        "numDocument": "",
+        "createdAt": "",
+        "updatedAt": "",
+        "point": "",
+        "status": "",
+        "remark": "",
+        "image": "",
+        "userId": 
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/documentsrequestcctv/listpaginationquestcctv"  // get
+// limit 15 หน้าร่ะ  หน้า 1 15 คือ 1-15 หน้า 2 16-30
+// pages ให้map เป๊นจำนวณหน้า 
+// status ให้ดูว่าจะดึงตัวไหน totalPages ไปตามหน้านั้นๆ
+// สำเสร็จ status 200
+
+สิ่งที่ Res ตอบกลับมา 
+
+{
+    "pages": [
+        1,
+        2
+    ],
+    "totalPages": 2,
+    "allData": [
+        {
+            "id": ,
+            "file": "",
+            "status": "",
+            "latitude": "",
+            "longtitude": "",
+            "userId": ,
+            "user": {
+                "firstName": "",
+                "lastName": "",
+                "phone": ""
+            },
+            "createdAt": "",
+            "updatedAt": "",
+            "type": "",
+            "time": "",
+            "num": 
+        },
+    ]}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/documentsrequestcctv/datapersonrequest/:firstName/:lastName"  // get
+// สิ่งที่ต้องใส่ Params firstName, lastName ไม่มีอยู่จริง status 400 { message : "string" }
+// หา firstName, lastName เฉพาะ สถานะ ที่ "ผ่าน"
+// status 200
+
+
+
+{
+    "message": "Filtered data retrieved successfully",
+    "data": [
+        {
+            "id": ,
+            "firstName": "",
+            "lastName": "",
+            "tel": "",
+            "nationalId": "",
+            "numDocument": "",
+            "createdAt": "",
+            "updatedAt": "",
+            "point": "",
+            "status": "",
+            "remark": ,
+            "image": "",
+            "userId": 
+        }
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/documentsrequestcctv/listpass?_page={Paramของตารางไอดี}" // get
+// status 200
+
+_page =  
+
+สิ่งที่ response ส่งกลับมา
+
+{
+    "pages": [
+        1,
+        2
+    ],
+    "totalPages": 2,
+    "dataRequestPassOnly": [
+        {
+            "id": 1,
+            "firstName": "",
+            "lastName": "",
+            "tel": "",
+            "nationalId": "",
+            "numDocument": "",
+            "createdAt": "",
+            "updatedAt": "",
+            "point": "",
+            "status": "ผ่าน",
+            "remark": ,
+            "image": "",
+            "userId": ,
+            "num": 
+        },{},{},{},{},{},{},{},{}]
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/documentsrequestcctv/listnotpass?_page={}"  // get
+// status 200 สำเสร็จ
+// pages map [ 1,2,3,4,5,6] ยก ตามจำนวณหน้าที่มี
+// totalPages เลือกหน้าที่ต้องการ 1  1-12   2 13-24
+
+// สิ่งที่ตอบกลับมา
+
+{
+    "pages": [
+        1,
+        2
+    ],
+    "totalPages": 2,
+    "dataNotPass": [
+        {
+            "id": 2,
+            "firstName": "ตัวอย่างสอง",
+            "lastName": "ตัวอย่างสอง",
+            "tel": "2222222222",
+            "nationalId": "2222222222222",
+            "numDocument": "2/11",
+            "point": "จุดที่2 ตัวที่ 1 2 3",
+            "status": "ไม่ผ่าน",
+            "remark": "ใบประชาชนไม่มีอยู่จริงล้อเล่นๆ",
+            "image": "http://localhost:8888/public/1737431834317.png",
+            "userId": 2,
+            "createdAt": "2025-01-21T03:57:11.447Z",
+            "updatedAt": "2025-02-20T07:05:11.057Z",
+            "type": "อัพเดทเมื่อ",
+            "time": "2025-02-20T07:05:11.057Z",
+            "num": 1
+        }, ]
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/documentsrequestcctv/listsenddocument?_page=1"  // get
+// status 200 สำเสร็จ
+// pages map [ 1,2,3,4,5,6] ยก ตามจำนวณหน้าที่มี
+// totalPages เลือกหน้าที่ต้องการ 1  1-12   2 13-24 ตย
+
+{
+    "pages": [
+        1,
+        2
+    ],
+    "totalPages": 2,
+    "dataSendDocument": [
+        {
+            "id": ,
+            "firstName": "",
+            "lastName": "",
+            "tel": "",
+            "nationalId": "",
+            "numDocument": "",
+            "point": "",
+            "status": "ยื่นเอกสาร",
+            "remark": ,
+            "image": "",
+            "userId": ,
+            "createdAt": "",
+            "updatedAt": "",
+            "type": "",
+            "time": "",
+            "num": 
+        },]
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/documentsrequestcctv/datapersonrequestcassonly/:firstName/:lastName"  // get
+// สำเสร็จ status 200
+
+{
+    "message": "Filtered data retrieved successfully",
+    "data": [
+        {
+            "id": ,
+            "firstName": "",
+            "lastName": "",
+            "tel": "",
+            "nationalId": "",
+            "numDocument": "",
+            "createdAt": "",
+            "updatedAt": "",
+            "point": "",
+            "status": "ผ่าน",
+            "remark": ,
+            "image": "",
+            "userId": 
+        }
+    ]
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/documentsrequestcctv/datapersonrequestcassonly/datatotalandcountallstatus"  // get
+// รวมทุกสเตตัส ผ่าน ไม่ผ่าน ยื่นเอกสาร รวม
+// สำเร็จ status 200
+
+response ที่ตอบกลับมา 
+
+{
+    "totalAllData": ,
+    "totalSendDocument": ,
+    "totalDocumentNotpass": ,
+    "totalDocumentPass": 
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// "https://mass-serv.ddns.net/documentsrequestcctv/datapassonly/:firstName/:lastName"  // get
+// สำเร็จ status 200
+
+response ที่ตอบกลับมา
+
+{
+    "message": "",
+    "dataPersonRequest": [
+        {
+            "id": ,
+            "firstName": "",
+            "lastName": "",
+            "tel": "",
+            "nationalId": "",
+            "numDocument": "",
+            "createdAt": "",
+            "updatedAt": "",
+            "point": "",
+            "status": "ผ่าน",
+            "remark": ,
+            "image": "",
+            "userId": 
+        },{},{},{},{},{},{},{},{}
+    ]
+}

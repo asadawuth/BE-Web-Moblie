@@ -5,7 +5,7 @@ const uploadMiddleware = require("../middleware/upload");
 const requestWatchcctvController = require("../controller/requestwatchcctv-controller");
 
 router.post(
-  "/createrrequestwatchcctv",
+  "/documentsrequestcctv",
   authenticated,
   uploadMiddleware.single("image"),
   requestWatchcctvController.createRequestWatchcctv
@@ -16,31 +16,26 @@ router.patch(
   uploadMiddleware.single("image"),
   requestWatchcctvController.changeDocumentRequestWatchcctv
 );
-
 router.patch(
   "/changestatusrequestwatchcctv/:requestId",
   authenticated,
   requestWatchcctvController.updateStatusRequest
 );
-
 router.patch(
   "/sendtextcassdocumentnotpass/:requestId",
   authenticated,
   requestWatchcctvController.sendMessageCassNotpass
 );
-
 router.get(
   "/listpaginationquestcctv",
   authenticated,
   requestWatchcctvController.dataListNotpassAndSenddocument
 );
-
 router.get(
   "/datapersonrequest/:firstName/:lastName",
   authenticated,
   requestWatchcctvController.dataNameRequest
 );
-
 router.get(
   "/listpass",
   authenticated,
@@ -56,23 +51,25 @@ router.get(
   authenticated,
   requestWatchcctvController.dataListSenddocumentOnly
 );
-
 router.get(
   "/datapersonrequestcassonly/:firstName/:lastName",
   authenticated,
   requestWatchcctvController.dataPersonCassPass
 );
-
 router.get(
   "/datatotalandcountallstatus",
   authenticated,
   requestWatchcctvController.totalAllData
 );
-
 router.get(
   "/datapassonly/:firstName/:lastName",
   authenticated,
   requestWatchcctvController.dataPersonPassOnly
+);
+router.get(
+  "/alldatapersonrander",
+  authenticated,
+  requestWatchcctvController.dataPerson
 );
 
 module.exports = router;
