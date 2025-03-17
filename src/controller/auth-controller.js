@@ -4,7 +4,7 @@ const prisma = require("../model/prisma.js");
 const createError = require("../middleware/error.js");
 const nodemailer = require("nodemailer");
 const path = require("path");
-const fs = require("fs").promises;
+const fs = require("fs");
 const {
   idRegisterSchema,
   loginSchema,
@@ -16,6 +16,8 @@ const {
   resetPasswordSchema,
   findIdEmployeeForDeleteShema,
   checkIdLoginEmployeeForDeleteShema,
+  checkIdLoginPoppulationForDeleteShema,
+  // findIdDaTaFirstNameAndLastNameInTableUser,
 } = require("../validator/validator-user.js");
 
 // REGISTER LOGIN GETDATAUSER UPDATEDATAUSER UPDATEPROFILE SETDEFAULTPROFILE
@@ -46,6 +48,7 @@ exports.registerIdEmployee = async (req, res, next) => {
 
     const idUser = await prisma.user.create({
       data: {
+        gender: value.gender,
         firstName: value.firstName,
         lastName: value.lastName,
         email: value.email,
@@ -55,7 +58,7 @@ exports.registerIdEmployee = async (req, res, next) => {
         profile: null,
       },
     });
-    delete idUser.password;
+    delete delete idUser.password;
     res.status(200).json({ message: "Created successfully", idUser });
   } catch (error) {
     next(error);
@@ -90,6 +93,60 @@ exports.login = async (req, res, next) => {
       expiresIn: process.env.JWT_EXPIRE || "1h",
     });
     delete user.password;
+    if (
+      user.status === "บล็อค" ||
+      user.status === "resign" ||
+      user.status === "ประชาชน"
+    ) {
+      return res.status(401).json({ message: "User not activated" });
+    }
+    res.status(200).json({
+      accessToken,
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.loginPopulation = async (req, res, next) => {
+  try {
+    const { value, error } = loginSchema.validate(req.body);
+    if (error) {
+      return next(error);
+    }
+
+    const emailOrMobile = value.emailOrMobile;
+
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [{ email: emailOrMobile }, { phone: emailOrMobile }],
+      },
+    });
+
+    if (!user) {
+      return next(createError("Invalid credentials", 401));
+    }
+
+    const isMatch = await bcrypt.compare(value.password, user.password);
+    if (!isMatch) {
+      return next(createError("Invalid credentials", 401));
+    }
+
+    const payload = { id: user.id };
+    const accessToken = jwt.sign(payload, process.env.JWT_SECRET_KEY || "AQZ", {
+      expiresIn: process.env.JWT_EXPIRE || "1h",
+    });
+    delete user.password;
+    if (
+      user.status === "บล็อค" ||
+      user.status === "resign" ||
+      user.status === "ผู้ดูแลระบบ" ||
+      user.status === "เจ้าหน้าที่ซ่อมบำรุง" ||
+      user.status === "ผู้ดำเนินการศูนย์บัญชาการ"
+    ) {
+      return res.status(401).json({ message: "User not activated" });
+    }
     res.status(200).json({
       accessToken,
       user,
@@ -239,7 +296,8 @@ exports.changeProfileToDefaultImage = async (req, res, next) => {
   }
 };
 
-// SEARCH FOR DELETE ID ใช้กับพนักงานที่พ้นสภาพ
+// SEARCH FOR DELETE ID ใช้กับพนักงานที่พ้นสภาพ และ ของประชาชนที่สร้างปัญหาให้ระบบ
+// สถานะ resign และ บล็อค จะไม่สามารถเข้าระบบได้
 exports.getForDeleteIdLoginEmployee = async (req, res, next) => {
   try {
     const { value, error } = findIdEmployeeForDeleteShema.validate(req.params);
@@ -269,7 +327,7 @@ exports.getForDeleteIdLoginEmployee = async (req, res, next) => {
     next(error);
   }
 };
-exports.deleteIduser = async (req, res, next) => {
+exports.deleteIduserEmployee = async (req, res, next) => {
   try {
     const { value, error } = checkIdLoginEmployeeForDeleteShema.validate(
       req.params
@@ -287,15 +345,46 @@ exports.deleteIduser = async (req, res, next) => {
     if (!user) {
       return next(createError(404, "Employee not found."));
     }
-    await prisma.user.delete({
+    await prisma.user.update({
       where: { id: Number(employeeIdLogin) },
+      data: {
+        status: "resign",
+      },
     });
     return res.status(200).json({ message: "Delete Employee Successfully" });
   } catch (error) {
     next(error);
   }
 };
+exports.deleteIdUserPoppulation = async (req, res, next) => {
+  try {
+    const { value, error } = checkIdLoginPoppulationForDeleteShema.validate(
+      req.params
+    );
+    if (error) {
+      return next(error);
+    }
 
+    const { populationIdLogin } = value;
+
+    const user = await prisma.user.findUnique({
+      where: { id: Number(populationIdLogin) },
+    });
+
+    if (!user) {
+      return next(createError(404, "Employee not found."));
+    }
+    await prisma.user.update({
+      where: { id: Number(populationIdLogin) },
+      data: {
+        status: "บล็อค",
+      },
+    });
+    return res.status(200).json({ message: "Delete Population Successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
 // CHANGEUSERPASSWORDANDEMAIL
 exports.changePassword = async (req, res, next) => {
   try {
@@ -438,7 +527,7 @@ exports.createOtp = async (req, res, next) => {
     });
 
     const mailOptions = {
-      from: "taodewy@gmail.com",
+      from: process.env.USEREMAIL,
       to: user.email,
       subject: "รหัส OTP ของคุณจาก เเมสเซอวิส",
       text: `รหัสผ่านของคุณ คือ ${otp}`,
@@ -535,6 +624,206 @@ exports.resetPassword = async (req, res, next) => {
 
     console.log("Password updated for user:", id);
     res.status(200).json({ message: "Password reset successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// DATA USER EMPLOYEE EMPLOYEERESIGN POPULATION POPULATIONBLOCK
+exports.dataEmployAlly = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({});
+    }
+
+    const _limit = 20; // จำนวนข้อมูล
+    const { _page = 1 } = req.query; // ดึงค่า _page จาก query parameter, ถ้าไม่มีจะตั้งค่าเริ่มต้นเป็น 1
+    const skip = (_page - 1) * _limit; // คำนวณจำนวนข้อมูลที่ต้องข้าม (skip) จากหน้าปัจจุบัน
+
+    const listData = await prisma.user.findMany({
+      where: {
+        OR: [
+          { status: "ผู้ดูแลระบบ" },
+          { status: "ผู้ดำเนินการศูนย์บัญชาการ" },
+          { status: "เจ้าหน้าที่ซ่อมบำรุง" },
+        ],
+      },
+      skip, // ข้ามข้อมูลตามที่คำนวณไว้
+      take: _limit, // ดึงข้อมูลจำนวนที่ต้องการ (20 รายการ)
+    });
+
+    const totalCount = await prisma.user.count({
+      where: {
+        OR: [
+          { status: "ผู้ดูแลระบบ" },
+          { status: "ผู้ดำเนินการศูนย์บัญชาการ" },
+          { status: "เจ้าหน้าที่ซ่อมบำรุง" },
+        ],
+      },
+    }); // นับทั้งหมด
+
+    const totalPages = Math.ceil(totalCount / _limit); // นับได้ 21 /20  = 0.9 = 1
+
+    const dataWithNum = listData.map((item, index) => ({
+      ...item,
+      num: skip + index + 1, // index เริ่มจาก 0
+    }));
+
+    res.status(200).json({
+      pages: Array.from({ length: totalPages }, (_, i) => i + 1), // สร้าง array สำหรับเลขหน้า เช่น [1,2,3]
+      totalPages,
+      data: dataWithNum,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.dataPopulation = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({});
+    }
+
+    const _limit = 20; // จำนวนข้อมูล
+    const { _page = 1 } = req.query; // ดึงค่า _page จาก query parameter, ถ้าไม่มีจะตั้งค่าเริ่มต้นเป็น 1
+    const skip = (_page - 1) * _limit; // คำนวณจำนวนข้อมูลที่ต้องข้าม (skip) จากหน้าปัจจุบัน
+
+    const listData = await prisma.user.findMany({
+      where: {
+        OR: [{ status: "ประชาชน" }],
+      },
+      skip, // ข้ามข้อมูลตามที่คำนวณไว้
+      take: _limit, // ดึงข้อมูลจำนวนที่ต้องการ (20 รายการ)
+    });
+
+    const totalCount = await prisma.user.count({
+      where: {
+        OR: [{ status: "ประชาชน" }],
+      },
+    }); // นับทั้งหมด
+
+    const totalPages = Math.ceil(totalCount / _limit); // นับได้ 21 /20  = 0.9 = 1
+
+    const dataWithNum = listData.map((item, index) => ({
+      ...item,
+      num: skip + index + 1, // index เริ่มจาก 0
+    }));
+
+    res.status(200).json({
+      pages: Array.from({ length: totalPages }, (_, i) => i + 1), // สร้าง array สำหรับเลขหน้า เช่น [1,2,3]
+      totalPages,
+      data: dataWithNum,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.dataEmployeeResign = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({});
+    }
+
+    const _limit = 20; // จำนวนข้อมูล
+    const { _page = 1 } = req.query; // ดึงค่า _page จาก query parameter, ถ้าไม่มีจะตั้งค่าเริ่มต้นเป็น 1
+    const skip = (_page - 1) * _limit; // คำนวณจำนวนข้อมูลที่ต้องข้าม (skip) จากหน้าปัจจุบัน
+
+    const listData = await prisma.user.findMany({
+      where: {
+        OR: [{ status: "Resign" }],
+      },
+      skip, // ข้ามข้อมูลตามที่คำนวณไว้
+      take: _limit, // ดึงข้อมูลจำนวนที่ต้องการ (20 รายการ)
+    });
+
+    const totalCount = await prisma.user.count({
+      where: {
+        OR: [{ status: "Resign" }],
+      },
+    }); // นับทั้งหมด
+
+    const totalPages = Math.ceil(totalCount / _limit); // นับได้ 21 /20  = 0.9 = 1
+
+    const dataWithNum = listData.map((item, index) => ({
+      ...item,
+      num: skip + index + 1, // index เริ่มจาก 0
+    }));
+
+    res.status(200).json({
+      pages: Array.from({ length: totalPages }, (_, i) => i + 1), // สร้าง array สำหรับเลขหน้า เช่น [1,2,3]
+      totalPages,
+      data: dataWithNum,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.dataPopulationBlock = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({});
+    }
+
+    const _limit = 20; // จำนวนข้อมูล
+    const { _page = 1 } = req.query; // ดึงค่า _page จาก query parameter, ถ้าไม่มีจะตั้งค่าเริ่มต้นเป็น 1
+    const skip = (_page - 1) * _limit; // คำนวณจำนวนข้อมูลที่ต้องข้าม (skip) จากหน้าปัจจุบัน
+
+    const listData = await prisma.user.findMany({
+      where: {
+        OR: [{ status: "บล็อค" }],
+      },
+      skip, // ข้ามข้อมูลตามที่คำนวณไว้
+      take: _limit, // ดึงข้อมูลจำนวนที่ต้องการ (20 รายการ)
+    });
+
+    const totalCount = await prisma.user.count({
+      where: {
+        OR: [{ status: "บล็อค" }],
+      },
+    }); // นับทั้งหมด
+
+    const totalPages = Math.ceil(totalCount / _limit); // นับได้ 21 /20  = 0.9 = 1
+
+    const dataWithNum = listData.map((item, index) => ({
+      ...item,
+      num: skip + index + 1, // index เริ่มจาก 0
+    }));
+
+    res.status(200).json({
+      pages: Array.from({ length: totalPages }, (_, i) => i + 1), // สร้าง array สำหรับเลขหน้า เช่น [1,2,3]
+      totalPages,
+      data: dataWithNum,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// SEARCH DATA ID USER
+exports.dataUserId = async (req, res, next) => {
+  try {
+    const { value, error } = findIdEmployeeForDeleteShema.validate(req.params);
+    if (error) {
+      next(error);
+    }
+
+    const { firstName, lastName } = value;
+
+    const dataIdUser = await prisma.user.findFirst({
+      where: {
+        firstName: firstName,
+        lastName: lastName,
+      },
+    });
+
+    if (!dataIdUser) {
+      next(createError("Id has not a found", 400));
+    }
+
+    res.status(200).json({ dataIdUser });
   } catch (error) {
     next(error);
   }

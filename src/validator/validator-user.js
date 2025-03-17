@@ -3,6 +3,7 @@ const Joi = require("joi");
 const idRegisterSchema = Joi.object({
   firstName: Joi.string().trim().required(),
   lastName: Joi.string().trim().required(),
+  gender: Joi.string().trim().valid("นาย", "นาง", "นางสาว").required(),
   email: Joi.string().email().allow("").required(),
   phone: Joi.string()
     .pattern(/^[0-9]{10}$/)
@@ -88,11 +89,20 @@ const checkIdDataEmployeeDeleteShema = Joi.object({
 const checkIdLoginEmployeeForDeleteShema = Joi.object({
   employeeIdLogin: Joi.number().integer().positive().required(),
 });
+const checkIdLoginPoppulationForDeleteShema = Joi.object({
+  populationIdLogin: Joi.number().integer().positive().required(),
+});
 const findIdEmployeeForDeleteShema = Joi.object({
   firstName: Joi.string().trim().required(),
   lastName: Joi.string().trim().required(),
 });
+// const findIdDaTaFirstNameAndLastNameInTableUser = Joi.object({
+//   firstName: Joi.string().trim().required(),
+//   lastName: Joi.string().trim().required(),
+// });
 
+exports.checkIdLoginPoppulationForDeleteShema =
+  checkIdLoginPoppulationForDeleteShema;
 exports.idRegisterSchema = idRegisterSchema;
 exports.loginSchema = loginSchema;
 exports.updateDataIdScheme = updateDataIdScheme;
@@ -104,3 +114,5 @@ exports.resetPasswordSchema = resetPasswordSchema;
 exports.findIdEmployeeForDeleteShema = findIdEmployeeForDeleteShema;
 exports.checkIdDataEmployeeDeleteShema = checkIdDataEmployeeDeleteShema;
 exports.checkIdLoginEmployeeForDeleteShema = checkIdLoginEmployeeForDeleteShema;
+// exports.findIdDaTaFirstNameAndLastNameInTableUser =
+//   findIdDaTaFirstNameAndLastNameInTableUser;

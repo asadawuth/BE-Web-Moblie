@@ -244,7 +244,7 @@ exports.changeStatusShopId = async (req, res, next) => {
       "ส่งเรื่องแล้ว",
       "กำลังเช็คเอกสาร",
       "ขอเอกสารเพิ่ม",
-      "สำเสร็จ",
+      "สำเร็จ",
       "ไม่ผ่าน",
     ];
 
@@ -328,7 +328,8 @@ exports.deleteIdShop = async (req, res, next) => {
         console.log("Attempting to delete file:", filePath);
 
         if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
+          // มีไฟล์ไหม
+          fs.unlinkSync(filePath); // ลบทันที
           console.log(`File deleted: ${filePath}`);
         } else {
           console.log(`File not found: ${filePath}`);
@@ -386,30 +387,30 @@ exports.deleteIdShop = async (req, res, next) => {
 exports.totalApprove = async (req, res, next) => {
   try {
     const totalApprove = await prisma.datashop.count({
-      where: { status: "สำเสร็จ" },
+      where: { status: "สำเร็จ" },
     });
 
     const totalPlace = await prisma.datashop.count({
       where: {
-        AND: [{ status: "สำเสร็จ" }, { category: "สถานที่" }],
+        AND: [{ status: "สำเร็จ" }, { category: "สถานที่" }],
       },
     });
 
     const totalRest = await prisma.datashop.count({
       where: {
-        AND: [{ status: "สำเสร็จ" }, { category: "ที่พัก" }],
+        AND: [{ status: "สำเร็จ" }, { category: "ที่พัก" }],
       },
     });
 
     const totalShop = await prisma.datashop.count({
       where: {
-        AND: [{ status: "สำเสร็จ" }, { category: "ร้านค้า" }],
+        AND: [{ status: "สำเร็จ" }, { category: "ร้านค้า" }],
       },
     });
 
     const totalRestaurant = await prisma.datashop.count({
       where: {
-        AND: [{ status: "สำเสร็จ" }, { category: "ร้านอาหาร" }],
+        AND: [{ status: "สำเร็จ" }, { category: "ร้านอาหาร" }],
       },
     });
 
@@ -435,7 +436,7 @@ exports.dataShopOnly = async (req, res, next) => {
 
     const dataAllShop = await prisma.datashop.findMany({
       where: {
-        AND: [{ status: "สำเสร็จ" }, { category: "ร้านค้า" }],
+        AND: [{ status: "สำเร็จ" }, { category: "ร้านค้า" }],
       },
       include: {
         _count: {
@@ -459,7 +460,7 @@ exports.dataShopOnly = async (req, res, next) => {
 
     const totalShops = await prisma.datashop.count({
       where: {
-        AND: [{ status: "สำเสร็จ" }, { category: "ร้านค้า" }],
+        AND: [{ status: "สำเร็จ" }, { category: "ร้านค้า" }],
       },
     });
 
@@ -485,7 +486,7 @@ exports.dataRestaurentOnly = async (req, res, next) => {
 
     const dataAllShop = await prisma.datashop.findMany({
       where: {
-        AND: [{ status: "สำเสร็จ" }, { category: "ร้านอาหาร" }],
+        AND: [{ status: "สำเร็จ" }, { category: "ร้านอาหาร" }],
       },
       include: {
         _count: {
@@ -509,7 +510,7 @@ exports.dataRestaurentOnly = async (req, res, next) => {
 
     const totalShops = await prisma.datashop.count({
       where: {
-        AND: [{ status: "สำเสร็จ" }, { category: "ร้านอาหาร" }],
+        AND: [{ status: "สำเร็จ" }, { category: "ร้านอาหาร" }],
       },
     });
 
@@ -535,7 +536,7 @@ exports.dataRestOnly = async (req, res, next) => {
 
     const dataAllShop = await prisma.datashop.findMany({
       where: {
-        AND: [{ status: "สำเสร็จ" }, { category: "สถานที่" }],
+        AND: [{ status: "สำเร็จ" }, { category: "สถานที่" }],
       },
       include: {
         _count: {
@@ -559,7 +560,7 @@ exports.dataRestOnly = async (req, res, next) => {
 
     const totalShops = await prisma.datashop.count({
       where: {
-        AND: [{ status: "สำเสร็จ" }, { category: "สถานที่" }],
+        AND: [{ status: "สำเร็จ" }, { category: "สถานที่" }],
       },
     });
 
@@ -585,7 +586,7 @@ exports.dataRentAPlaceOnly = async (req, res, next) => {
 
     const dataAllShop = await prisma.datashop.findMany({
       where: {
-        AND: [{ status: "สำเสร็จ" }, { category: "ที่พัก" }],
+        AND: [{ status: "สำเร็จ" }, { category: "ที่พัก" }],
       },
       include: {
         _count: {
@@ -609,7 +610,7 @@ exports.dataRentAPlaceOnly = async (req, res, next) => {
 
     const totalShops = await prisma.datashop.count({
       where: {
-        AND: [{ status: "สำเสร็จ" }, { category: "ที่พัก" }],
+        AND: [{ status: "สำเร็จ" }, { category: "ที่พัก" }],
       },
     });
 
@@ -793,7 +794,7 @@ exports.dataSuccessOnly = async (req, res, next) => {
 
     const dataAllShop = await prisma.datashop.findMany({
       where: {
-        status: "สำเสร็จ",
+        status: "สำเร็จ",
       },
       select: {
         id: true,
@@ -820,7 +821,7 @@ exports.dataSuccessOnly = async (req, res, next) => {
 
     const totalShops = await prisma.datashop.count({
       where: {
-        status: "สำเสร็จ",
+        status: "สำเร็จ",
       },
     });
 
@@ -912,7 +913,7 @@ exports.dataTotalAllStatus = async (req, res, next) => {
 
     const totalStatusSuccess = await prisma.datashop.count({
       where: {
-        status: "สำเสร็จ",
+        status: "สำเร็จ",
       },
     });
 
@@ -941,4 +942,3 @@ exports.dataTotalAllStatus = async (req, res, next) => {
     next(error);
   }
 };
-

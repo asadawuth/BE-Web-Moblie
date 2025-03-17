@@ -253,7 +253,7 @@ exports.changeStatusReport = async (req, res, next) => {
       "แจ้ง",
       "รับแจ้งแล้ว",
       "กำลังดำเนินการ",
-      "จัดการเสร็จสิ้น",
+      "จัดการเร็จสิ้น",
       "ยกเลิก",
     ];
     if (!validStatuses.includes(status)) {
@@ -446,7 +446,7 @@ exports.countAllStatusReport = async (req, res, next) => {
     });
 
     const countStatus4 = await prisma.postuserreport.count({
-      where: { status: "จัดการเสร็จสิ้น" },
+      where: { status: "จัดการเร็จสิ้น" },
     });
 
     const countStatus5 = await prisma.postuserreport.count({
@@ -649,7 +649,7 @@ exports.dataCompletedOnly = async (req, res, next) => {
 
     const [dataAllReport, totalCount] = await prisma.$transaction([
       prisma.postuserreport.findMany({
-        where: { status: "จัดการเสร็จสิ้น" },
+        where: { status: "จัดการเร็จสิ้น" },
         include: {
           user: {
             select: {

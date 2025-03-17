@@ -142,7 +142,7 @@ exports.updateStatusId = async (req, res, next) => {
       "แจ้ง",
       "รับแจ้งแล้ว",
       "กำลังดำเนินการ",
-      "จัดการเสร็จสิ้น",
+      "จัดการเร็จสิ้น",
       "ยกเลิก",
     ];
     if (!validStatuses.includes(status)) {
@@ -282,7 +282,7 @@ exports.totalAllStatus = async (req, res, next) => {
     });
 
     const countStatus4 = await prisma.sosvoiceorvdo.count({
-      where: { status: "จัดการเสร็จสิ้น" },
+      where: { status: "จัดการเร็จสิ้น" },
     });
 
     const countStatus5 = await prisma.sosvoiceorvdo.count({
@@ -466,7 +466,7 @@ exports.allDataCompletedOnly = async (req, res, next) => {
     const skip = (_page - 1) * _limit; // คำนวณข้อมูลเริ่มต้น //ex 2-1 1*16 = 16 เริ่มต้น
 
     const dataList = await prisma.sosvoiceorvdo.findMany({
-      where: { status: "จัดการเสร็จสิ้น" },
+      where: { status: "จัดการเร็จสิ้น" },
       include: {
         user: {
           select: {
@@ -482,7 +482,7 @@ exports.allDataCompletedOnly = async (req, res, next) => {
     });
 
     const totalCount = await prisma.sosvoiceorvdo.count({
-      where: { status: "จัดการเสร็จสิ้น" },
+      where: { status: "จัดการเร็จสิ้น" },
     }); // ex  17    17/16 = 1.133  => 2
     const totalPages = Math.ceil(totalCount / _limit); // ex  17    17/16 = 1.133  => 2
     const allData = dataList.map((item, index) => {
@@ -559,6 +559,37 @@ exports.allDataCanceledOnly = async (req, res, next) => {
       allData,
     });
   } catch (error) {
+    next(error);
+  }
+};
+
+exports.deleteVoice = async (req, res, next) => {
+  try {
+    const { error, value } = checkIdDataSosVoice.validate(req.params);
+
+    if (error) {
+      console.error("Validation Error:", error);
+      return next(createError(400, "Invalid sos Id"));
+    }
+
+    console.log("Value received:", value); // ✅ ตรวจสอบค่า value
+
+    const id = Number(value.sosVoiceId); // ✅ ใช้ sosVoiceId แทน id
+
+    if (!id || isNaN(id)) {
+      return next(createError(400, "Invalid ID format"));
+    }
+
+    await prisma.sosvoiceorvdo.delete({
+      where: { id },
+    });
+
+    return res.status(200).json({ message: "Deleted Successfully", id });
+  } catch (error) {
+    console.error("Error in deleteVoice:", error);
+    if (res && typeof res.status === "function") {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
     next(error);
   }
 };

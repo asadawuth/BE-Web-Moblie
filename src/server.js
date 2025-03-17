@@ -21,7 +21,7 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
-); 
+);
 
 app.use("/public", express.static("public"));
 app.use("/uploads", range({ accept: "bytes" }), express.static("uploads"));
@@ -31,12 +31,13 @@ const errorMiddleWear = require("./middleware/error");
 const rateLimitMiddlewear = require("./middleware/rate-limit.js");
 
 const authRoute = require("./dataRoute/auth-route.js");
-const userReport = require("./dataRoute/userreport-route.js");
-const commentReportId = require("./dataRoute/commentiduserreport-route.js");
-const shop = require("./dataRoute/shop-route.js");
-const commentShop = require("./dataRoute/commentshop-route.js");
-const requestWatchcctv = require("./dataRoute/requestwatchcctv-route.js");
-const voiceSos = require("./dataRoute/sosvoice-route.js");
+const userReportRoute = require("./dataRoute/userreport-route.js");
+const commentReportIdRoute = require("./dataRoute/commentiduserreport-route.js");
+const shopRoute = require("./dataRoute/shop-route.js");
+const commentShopRoute = require("./dataRoute/commentshop-route.js");
+const requestWatchcctvRoute = require("./dataRoute/requestwatchcctv-route.js");
+const voiceSosRoute = require("./dataRoute/sosvoice-route.js");
+const integratedInformationRoute = require("./dataRoute/integratedInformation-route.js");
 
 app.use(morgan("dev"));
 app.use(express.json());
@@ -48,25 +49,25 @@ app.use(
     req.io = io;
     next();
   },
-  userReport
+  userReportRoute
 );
-app.use("/commentidreport", commentReportId);
+app.use("/commentidreport", commentReportIdRoute);
 app.use(
   "/aboutshop",
   (req, res, next) => {
     req.io = io;
     next();
   },
-  shop
+  shopRoute
 );
-app.use("/commentsshop", commentShop);
+app.use("/commentsshop", commentShopRoute);
 app.use(
   "/documentsrequestcctv",
   (req, res, next) => {
     req.io = io;
     next();
   },
-  requestWatchcctv
+  requestWatchcctvRoute
 );
 app.use(
   "/voicesos",
@@ -74,8 +75,9 @@ app.use(
     req.io = io;
     next();
   },
-  voiceSos
+  voiceSosRoute
 );
+app.use("/integratedinformation", integratedInformationRoute);
 
 app.use(notFoundMiddlewear);
 app.use(errorMiddleWear);

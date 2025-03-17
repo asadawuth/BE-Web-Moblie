@@ -72,4 +72,10 @@ router.get(
   sosVoiceController.allDataCanceledOnly
 );
 
+router.delete(
+  "/delete/:sosVoiceId",
+  authenticated,
+  sosVoiceController.deleteVoice
+);
+
 module.exports = router;
