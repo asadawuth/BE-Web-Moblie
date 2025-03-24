@@ -1,4 +1,6 @@
 const prisma = require("../model/prisma.js");
+const ExcelJS = require("exceljs");
+const createError = require("../middleware/error.js");
 const {
   createNowDataIntegratedInformation,
 } = require("../validator/validator-integratedInformation.js");
@@ -55,11 +57,9 @@ exports.updataDataIntegratedInformation = async (req, res, next) => {
 
 exports.saveDataIntegratedInformationExcel = async (req, res, next) => {
   try {
-    // ดึงข้อมูลล่าสุด
+    // 👉 ดึงข้อมูลล่าสุดจากฐานข้อมูล
     const latestData = await prisma.integratedinformation.findFirst({
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: { createdAt: "desc" },
       include: {
         user: {
           select: {
@@ -72,56 +72,58 @@ exports.saveDataIntegratedInformationExcel = async (req, res, next) => {
     });
 
     if (!latestData) {
-      return res.status(404).json({ message: "ไม่พบข้อมูล" });
+      return next(createError("Data is not found.", 404));
     }
 
-    // สร้าง Workbook
+    // 👉 ลบ `userId` และ `user` ออกจากคอลัมน์
+    let columnNames = Object.keys(latestData).filter(
+      (col) => col !== "userId" && col !== "user"
+    );
+
+    // 👉 เพิ่ม `firstName`, `lastName`, `status` ลงในคอลัมน์
+    columnNames.push("firstName", "lastName", "status");
+
+    // 👉 สร้าง Workbook และ Worksheet
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Latest Data");
+    const worksheet = workbook.addWorksheet("Integrated Data");
 
-    // กำหนด Header
-    worksheet.columns = [
-      { header: "Male", key: "male", width: 10 },
-      { header: "Female", key: "female", width: 10 },
-      { header: "Household", key: "household", width: 15 },
-      { header: "Store", key: "store", width: 10 },
-      { header: "Restaurant", key: "restaurant", width: 15 },
-      { header: "Place", key: "place", width: 10 },
-      { header: "Accommodation", key: "accommodation", width: 15 },
-      { header: "User First Name", key: "firstName", width: 15 },
-      { header: "User Last Name", key: "lastName", width: 15 },
-      { header: "User Status", key: "status", width: 10 },
-      { header: "Created At", key: "createdAt", width: 20 },
-    ];
+    // 👉 เพิ่มชื่อคอลัมน์ลงไป
+    worksheet.addRow(columnNames);
 
-    // เพิ่มข้อมูลลงใน Excel
-    worksheet.addRow({
-      male: latestData.male,
-      female: latestData.female,
-      household: latestData.household,
-      store: latestData.store,
-      restaurant: latestData.restaurant,
-      place: latestData.place,
-      accommodation: latestData.accommodation,
-      firstName: latestData.user.firstName,
-      lastName: latestData.user.lastName,
-      status: latestData.user.status,
-      createdAt: latestData.createdAt,
+    // 👉 แปลง `createdAt` เป็น string ที่อ่านง่าย
+    const rowData = columnNames.map((col) => {
+      if (col === "createdAt") {
+        return new Date(latestData[col])
+          .toISOString()
+          .replace("T", " ")
+          .slice(0, 19); // แปลงเป็น `YYYY-MM-DD HH:mm:ss`
+      }
+      if (col === "firstName") return latestData.user?.firstName || "";
+      if (col === "lastName") return latestData.user?.lastName || "";
+      if (col === "status") return latestData.user?.status || "";
+      return latestData[col]; // ข้อมูลอื่น ๆ
     });
 
-    // ตั้งค่า Header สำหรับการดาวน์โหลดไฟล์
+    worksheet.addRow(rowData);
+
+    // 👉 ปรับความกว้างของคอลัมน์ให้อ่านง่ายขึ้น
+    worksheet.columns.forEach((column) => {
+      column.width = 20; // ปรับความกว้างของทุกคอลัมน์เป็น 20
+    });
+
+    // 👉 ตั้งค่า response ให้ Postman ดาวน์โหลดไฟล์ Excel
     res.setHeader(
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     );
     res.setHeader(
       "Content-Disposition",
-      "attachment; filename=LatestData.xlsx"
+      "attachment; filename=IntegratedInformation.xlsx"
     );
 
-    // ส่งไฟล์ Excel กลับไป
+    // 👉 ส่งไฟล์ Excel กลับไปให้ Postman
     await workbook.xlsx.write(res);
-    res.status(200).end();
+    res.end();
   } catch (error) {
     next(error);
   }

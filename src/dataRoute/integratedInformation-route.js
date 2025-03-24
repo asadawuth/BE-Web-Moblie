@@ -14,10 +14,13 @@ router.post(
   authenticated,
   integratedInformation.updataDataIntegratedInformation
 );
-router.get(
+
+/*
+router.post(
   "/SaveLatestFileDataIngratedInformation",
   authenticated,
   integratedInformation.saveDataIntegratedInformationExcel
 );
+*/
 
 module.exports = router;

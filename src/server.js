@@ -38,6 +38,7 @@ const commentShopRoute = require("./dataRoute/commentshop-route.js");
 const requestWatchcctvRoute = require("./dataRoute/requestwatchcctv-route.js");
 const voiceSosRoute = require("./dataRoute/sosvoice-route.js");
 const integratedInformationRoute = require("./dataRoute/integratedInformation-route.js");
+const exportsDataExcel = require("./dataRoute/exportfileexcel-route.js");
 
 app.use(morgan("dev"));
 app.use(express.json());
@@ -78,6 +79,7 @@ app.use(
   voiceSosRoute
 );
 app.use("/integratedinformation", integratedInformationRoute);
+app.use("/servicesfileexcel", exportsDataExcel);
 
 app.use(notFoundMiddlewear);
 app.use(errorMiddleWear);
