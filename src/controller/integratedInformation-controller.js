@@ -55,6 +55,7 @@ exports.updataDataIntegratedInformation = async (req, res, next) => {
   }
 };
 
+/*
 exports.saveDataIntegratedInformationExcel = async (req, res, next) => {
   try {
     // 👉 ดึงข้อมูลล่าสุดจากฐานข้อมูล
@@ -128,3 +129,4 @@ exports.saveDataIntegratedInformationExcel = async (req, res, next) => {
     next(error);
   }
 };
+*/
