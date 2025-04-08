@@ -1,7 +1,7 @@
 const prisma = require("../model/prisma.js");
 const ExcelJS = require("exceljs");
 const { date } = require("../validator/validator-exportfileexcel.js");
-const createError = require("../middleware/error.js");
+const createError = require("../utils/create-error.js");
 
 exports.dataReportExcel = async (req, res, next) => {
   try {

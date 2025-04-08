@@ -1,6 +1,6 @@
 const prisma = require("../model/prisma.js");
 const ExcelJS = require("exceljs");
-const createError = require("../middleware/error.js");
+const createError = require("../utils/create-error.js");
 const {
   createNowDataIntegratedInformation,
 } = require("../validator/validator-integratedInformation.js");
