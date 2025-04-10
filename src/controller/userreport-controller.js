@@ -649,7 +649,7 @@ exports.dataCompletedOnly = async (req, res, next) => {
 
     const [dataAllReport, totalCount] = await prisma.$transaction([
       prisma.postuserreport.findMany({
-        where: { status: "จัดการเร็จสิ้น" },
+        where: { status: "จัดการเสร็จสิ้น" },
         include: {
           user: {
             select: {
