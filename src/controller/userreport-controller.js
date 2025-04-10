@@ -446,7 +446,7 @@ exports.countAllStatusReport = async (req, res, next) => {
     });
 
     const countStatus4 = await prisma.postuserreport.count({
-      where: { status: "จัดการเร็จสิ้น" },
+      where: { status: "จัดการเสร็จสิ้น" },
     });
 
     const countStatus5 = await prisma.postuserreport.count({
