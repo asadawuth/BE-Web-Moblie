@@ -1,8 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const prisma = require("../model/prisma.js");
-// const createError = require("../utils/create-error.js");
-const createError = require("../middleware/error.js");
+const createError = require("../utils/create-error.js");
 const nodemailer = require("nodemailer");
 const path = require("path");
 const fs = require("fs");
@@ -187,6 +186,26 @@ exports.updateDataId = async (req, res, next) => {
 
     if (!findData) {
       return next(createError(404, "User not found"));
+    }
+
+    const existingEmail = await prisma.user.findFirst({
+      where: {
+        email: value.email,
+        NOT: { id: userId },
+      },
+    });
+    if (existingEmail) {
+      return next(createError(400, "Email already exists"));
+    }
+
+    const existingPhone = await prisma.user.findFirst({
+      where: {
+        phone: value.phone,
+        NOT: { id: userId },
+      },
+    });
+    if (existingPhone) {
+      return next(createError(400, "Tel have a table"));
     }
 
     const updatedUser = await prisma.user.update({
@@ -428,6 +447,8 @@ exports.changeEmail = async (req, res, next) => {
     if (error) {
       return res.status(400).json({ message: error.message });
     }
+
+    const userId = req.user.id;
     const { oldEmail, newEmail, confirmNewEmail } = req.body;
 
     const findEmail = await prisma.user.findFirst({
@@ -448,11 +469,27 @@ exports.changeEmail = async (req, res, next) => {
       return res.status(400).json({ message: "New email is already in use" });
     }
 
-    await prisma.user.update({
+    const dataInTable = await prisma.user.findFirst({
+      where: {
+        email: newEmail,
+        NOT: { id: userId },
+      },
+    });
+
+    if (dataInTable) {
+      return next(createError(400, "Email already exists"));
+    }
+
+    const dataNewEmail = await prisma.user.update({
       where: { id: findEmail.id },
       data: { email: newEmail },
     });
-    res.status(200).json({ message: "Email changed successfully" });
+
+    delete dataNewEmail.password;
+
+    res
+      .status(200)
+      .json({ message: "Email changed successfully", dataNewEmail });
   } catch (error) {
     next(error);
   }
