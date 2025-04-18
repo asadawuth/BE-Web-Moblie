@@ -7,17 +7,18 @@ exports.dataReportExcel = async (req, res, next) => {
   try {
     const { value, error } = date.validate(req.params);
     if (error) return next(createError("Data is not found", 400));
-    const { startDate, endDate } = value;
-    const startParts = startDate.split("-");
-    const endParts = endDate.split("-");
 
-    // สร้างเวลาแบบ UTC
+    const { startDate, endDate } = value; // { start: '2025-04-11', end: '2025-04-18' } เคส ตัวอย่าง เอา - ออก
+    const startParts = startDate.split("-"); // startParts = ['2025', '04', '11']
+    const endParts = endDate.split("-"); // endParts = [ '2025','04','18' ]
+
     const start = new Date(
       Date.UTC(startParts[0], startParts[1] - 1, startParts[2], 0, 0, 0)
-    );
+    ); // '2025' // '04' // '11' // time
     const end = new Date(
       Date.UTC(endParts[0], endParts[1] - 1, endParts[2], 23, 59, 59, 999)
-    );
+    ); // '2025' // '04' // '18' // time
+
     const dataUserReport = await prisma.postuserreport.findMany({
       where: {
         createdAt: {
@@ -35,31 +36,34 @@ exports.dataReportExcel = async (req, res, next) => {
         },
       },
     });
+
     if (!dataUserReport || dataUserReport.length === 0) {
-      // return next(createError("Data is not found", 404));
       return res.status(404).json({ message: "Data is not found" });
     }
 
     let columnNames = Object.keys(dataUserReport[0]).filter(
-      (col) => col !== "userId" && col !== "user"
-    ); // หาตัวที่ไม่ใช่ userId  user
+      (col) => col !== "user"
+    );
+    // เอาตัวที่ include หาตัวที่ไม่ใช่ ีuser เพื่อ เอา user ออกไปก่อน
+    columnNames.push("firstName", "lastName", "statusUser");
 
-    columnNames.push("firstName", "lastName", "status");
+    const ExcelJS = require("exceljs");
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("dataUserReport");
+
     worksheet.addRow(columnNames);
 
     dataUserReport.forEach((item) => {
       const row = columnNames.map((col) => {
         if (col === "createdAt") {
           return new Date(item[col])
-            .toISOString() // 2025-03-24T14:32:01.000Z
-            .replace("T", " ") // กลายเป็น "2025-03-24 14:32:01.000Z"
-            .slice(0, 19); // ตัดเหลือแค่ "2025-03-24 14:32:01"
+            .toISOString()
+            .replace("T", " ")
+            .slice(0, 19);
         }
         if (col === "firstName") return item.user?.firstName || "";
         if (col === "lastName") return item.user?.lastName || "";
-        if (col === "status") return item.user?.status || "";
+        if (col === "statusUser") return item.user?.status || "";
         return item[col];
       });
       worksheet.addRow(row);
@@ -68,11 +72,12 @@ exports.dataReportExcel = async (req, res, next) => {
     worksheet.columns.forEach((column) => {
       column.width = 20;
     });
+
     res.setHeader(
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     );
-    // ➡️ บอก browser ว่า response นี้เป็นไฟล์ Excel (.xlsx) เพื่อให้มันรู้วิธีจัดการ
+
     const now = new Date();
     const timestamp =
       now.getFullYear().toString() +
@@ -137,12 +142,14 @@ exports.dataShopExcel = async (req, res, next) => {
 
     // เตรียม header column
     let columnNames = Object.keys(dataUserReportShop[0]).filter(
-      (col) => col !== "userId" && col !== "user"
+      (col) => col !== "user"
     );
-    columnNames.push("firstName", "lastName", "status");
+    columnNames.push("firstName", "lastName", "statusUser");
 
+    const ExcelJS = require("exceljs");
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("dataUserReportShop");
+
     worksheet.addRow(columnNames);
 
     dataUserReportShop.forEach((item) => {
@@ -155,7 +162,7 @@ exports.dataShopExcel = async (req, res, next) => {
         }
         if (col === "firstName") return item.user?.firstName || "";
         if (col === "lastName") return item.user?.lastName || "";
-        if (col === "status") return item.user?.status || "";
+        if (col === "statusUser") return item.user?.status || "";
         return item[col];
       });
       worksheet.addRow(row);
@@ -200,7 +207,6 @@ exports.dataReuestcctvExcel = async (req, res, next) => {
     const startParts = startDate.split("-");
     const endParts = endDate.split("-");
 
-    // สร้างเวลาแบบ UTC
     const start = new Date(
       Date.UTC(startParts[0], startParts[1] - 1, startParts[2], 0, 0, 0)
     );
@@ -208,11 +214,6 @@ exports.dataReuestcctvExcel = async (req, res, next) => {
       Date.UTC(endParts[0], endParts[1] - 1, endParts[2], 23, 59, 59, 999)
     );
 
-    // Debug log: เช็คเวลาที่ถูกสร้าง
-    // console.log("Start (UTC):", start.toISOString());
-    // console.log("End (UTC):", end.toISOString());
-
-    // ดึงข้อมูลจากฐาน
     const dataRequestcctv = await prisma.requestwatchcctv.findMany({
       where: {
         createdAt: {
@@ -238,11 +239,11 @@ exports.dataReuestcctvExcel = async (req, res, next) => {
 
     // สร้างหัวคอลัมน์
     let columnNames = Object.keys(dataRequestcctv[0]).filter(
-      (col) => col !== "userId" && col !== "user"
+      (col) => col !== "user"
     );
     columnNames.push("firstNameUser", "lastNameUser", "statusUser");
 
-    // สร้าง Excel workbook
+    const ExcelJS = require("exceljs");
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("dataRequestcctv");
     worksheet.addRow(columnNames);
@@ -351,6 +352,7 @@ exports.dataReportsosExcel = async (req, res, next) => {
       "userStatus",
     ];
 
+    const ExcelJS = require("exceljs");
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("dataReportsos");
     worksheet.addRow(columnNames); // ➕ Header

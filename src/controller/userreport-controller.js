@@ -253,7 +253,7 @@ exports.changeStatusReport = async (req, res, next) => {
       "แจ้ง",
       "รับแจ้งแล้ว",
       "กำลังดำเนินการ",
-      "จัดการเร็จสิ้น",
+      "จัดการเสร็จสิ้น",
       "ยกเลิก",
     ];
     if (!validStatuses.includes(status)) {
