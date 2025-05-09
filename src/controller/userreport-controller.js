@@ -71,8 +71,6 @@ exports.createPostUserReport = async (req, res, next) => {
         id: newPost.user.id,
         firstName: newPost.user.firstName,
         lastName: newPost.user.lastName,
-        // email: newPost.user.email,
-        // phone: newPost.user.phone,
         profile: newPost.user.profile,
       },
     };
@@ -135,7 +133,6 @@ exports.reportListPagination = async (req, res, next) => {
     next(error);
   }
 };
-
 exports.allDataReportInSideBoard = async (req, res, next) => {
   try {
     const { value, error } = checkIdDataReportTitleSchema.validate(req.params);

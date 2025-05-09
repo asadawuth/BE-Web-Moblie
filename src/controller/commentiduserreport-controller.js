@@ -9,42 +9,34 @@ exports.createCommentInReportId = async (req, res, next) => {
     const userId = req.user?.id;
     const { text } = req.body;
 
-    if (!userId) {
-      return next(createError("User ID is required"), 400);
-    }
-    if (!reportId) {
-      return next(createError("Report ID is required"), 400);
-    }
+    if (!userId) return next(createError("User ID is required"), 400);
+    if (!reportId) return next(createError("Report ID is required"), 400);
 
     const images =
-      req.files && req.files.image
-        ? req.files.image.map(
-            (file) =>
-              `${req.protocol}://${req.get("host")}/public/${file.filename}`
-          )
-        : [];
+      req.files?.image?.map(
+        (file) => `${req.protocol}://${req.get("host")}/public/${file.filename}`
+      ) || [];
 
-    const videoUrl =
-      req.files && req.files.video && req.files.video[0]
-        ? `${req.protocol}://${req.get("host")}/public/${
-            req.files.video[0].filename
-          }`
-        : null;
+    const videoUrl = req.files?.video?.[0]
+      ? `${req.protocol}://${req.get("host")}/public/${
+          req.files.video[0].filename
+        }`
+      : null;
 
     const dataIdUserReport = await prisma.postuserreport.findFirst({
-      where: {
-        id: Number(reportId),
-      },
+      where: { id: Number(reportId) },
     });
 
-    const data = await prisma.commentinpostuserreport.create({
+    // ✅ สร้างคอมเมนต์ใหม่
+    const comment = await prisma.commentinpostuserreport.create({
       data: {
-        userId: userId,
+        userId,
         text: text || null,
         image: images.length > 0 ? images.join(",") : null,
         vdo: videoUrl || null,
         status: dataIdUserReport.status,
         reportId: Number(reportId),
+        isNotified: false, //	❌ ยังไม่แจ้ง
       },
       include: {
         user: {
@@ -59,26 +51,37 @@ exports.createCommentInReportId = async (req, res, next) => {
       },
     });
 
-    try {
-      if (req.io) {
-        req.io.emit("newComment", {
-          message: `มีความคิดเห็นใหม่ในโพสต์: ${
-            dataIdUserReport.texttitle || "ไม่มีหัวข้อ"
-          }`,
-          commentId: data.id,
-        });
-      } else {
-        console.warn("Socket.IO is not initialized for this request");
-      }
-    } catch (ioError) {
-      console.error("Socket.IO error:", ioError);
+    // อัพเดทเวลาของโค๊ด
+    await prisma.postuserreport.update({
+      where: { id: Number(reportId) },
+      data: { updatedAt: new Date() },
+    });
+
+    // แจ้ง frontend ว่ามีคอมเมนต์ใหม่
+    if (req.io) {
+      // ชื่อลิ้งกับ Fn
+      req.io.emit("newComment", {
+        postId: Number(reportId), // บอกว่าคอมเมนต์ใหม่มาจากโพสต์ไหน
+        commentId: comment.id, // id ของคอมเมนต์ใหม่
+      });
     }
 
-    res.status(200).json(data);
-  } catch (error) {
-    next(error);
+    //  ✅ แจ้งแล้ว
+    await prisma.commentinpostuserreport.update({
+      where: {
+        id: comment.id,
+      },
+      data: {
+        isNotified: true, //  ✅ แจ้งแล้ว
+      },
+    });
+
+    return res.status(200).json(comment);
+  } catch (err) {
+    next(err);
   }
 };
+
 exports.dataCommentInReportId = async (req, res, next) => {
   try {
     const { reportId } = req.params;
@@ -318,3 +321,14 @@ exports.deleteCommentInReportId = async (req, res, next) => {
     next(error);
   }
 };
+
+/*
+RequestWatchcctvCount	0
+newCommentCount	1
+newCommentCounts	{"19":2,"20":3,"21":4}
+newdataRequestSosVoiceCount	0
+newdataRequestWatchcctvCount	0
+newdataSosRequestCount	0
+notificationsCount	0
+shopRequestCount	0
+*/

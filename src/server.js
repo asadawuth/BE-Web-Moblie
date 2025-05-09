@@ -15,6 +15,7 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
+
 app.use(
   cors({
     origin: "*",
@@ -52,7 +53,14 @@ app.use(
   },
   userReportRoute
 );
-app.use("/commentidreport", commentReportIdRoute);
+app.use(
+  "/commentidreport",
+  (req, res, next) => {
+    req.io = io;
+    next();
+  },
+  commentReportIdRoute
+);
 app.use(
   "/aboutshop",
   (req, res, next) => {
@@ -83,6 +91,20 @@ app.use("/servicesfileexcel", exportsDataExcel);
 
 app.use(notFoundMiddlewear);
 app.use(errorMiddleWear);
+
+// io.on("connection", (socket) => {
+//   console.log("🟢 Client connected:", socket.id);
+
+//   socket.on("joinRoom", (roomName) => {
+//     socket.join(roomName);
+//     console.log(`👥 Socket ${socket.id} joined room ${roomName}`);
+//     socket.emit("roomJoined", roomName); // แจ้ง client ว่าเข้าห้องแล้ว
+//   });
+
+//   socket.on("disconnect", () => {
+//     console.log("🔴 Client disconnected:", socket.id);
+//   });
+// });
 
 const PORT = process.env.PORT || 8888;
 
