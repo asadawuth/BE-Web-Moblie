@@ -132,3 +132,11 @@ model integratedinformation {
   userId        Int?
   user          user?    @relation(fields: [userId], references: [id])
 }
+
+model companies {
+  id        Int      @id @default(autoincrement())
+  key       String
+  value     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
