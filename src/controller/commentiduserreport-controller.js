@@ -14,7 +14,8 @@ exports.createCommentInReportId = async (req, res, next) => {
 
     const images =
       req.files?.image?.map(
-        (file) => `${req.protocol}://${req.get("host")}/public/${file.filename}`
+        (file) =>
+          `${req.protocol}://${req.get("host")}/public/${file.filename}`,
       ) || [];
 
     const videoUrl = req.files?.video?.[0]
@@ -86,6 +87,8 @@ exports.dataCommentInReportId = async (req, res, next) => {
   try {
     const { reportId } = req.params;
     const userId = req.user?.id;
+
+    console.log(reportId);
 
     if (!reportId) {
       return next(createError("Reports ID is required", 400));
@@ -192,7 +195,7 @@ exports.editCommentInReportId = async (req, res, next) => {
         const filePath = path.join(
           __dirname,
           "../../public",
-          path.basename(fileUrl.trim())
+          path.basename(fileUrl.trim()),
         );
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
@@ -207,7 +210,8 @@ exports.editCommentInReportId = async (req, res, next) => {
     if (req.files?.image) {
       newImages.forEach(deleteFile); // ลบไฟล์รูปภาพเก่า
       newImages = req.files.image.map(
-        (file) => `${req.protocol}://${req.get("host")}/public/${file.filename}`
+        (file) =>
+          `${req.protocol}://${req.get("host")}/public/${file.filename}`,
       );
     } else if (image === "null") {
       // หากผู้ใช้ต้องการลบรูปภาพทั้งหมด
@@ -285,7 +289,7 @@ exports.deleteCommentInReportId = async (req, res, next) => {
       const filePath = path.join(
         __dirname,
         "../../public",
-        path.basename(fileUrl.trim())
+        path.basename(fileUrl.trim()),
       );
       console.log("Attempting to delete file:", filePath);
 

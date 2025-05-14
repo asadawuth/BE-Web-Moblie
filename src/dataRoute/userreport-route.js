@@ -11,37 +11,37 @@ router.post(
     { name: "image", maxCount: 9 },
     { name: "video", maxCount: 1 },
   ]),
-  reportController.createPostUserReport
+  reportController.createPostUserReport,
 );
 
 router.get(
   "/reportslist",
   authenticated,
-  reportController.reportListPagination
+  reportController.reportListPagination,
 );
 
 router.get(
   "/AllDataInComment/:reportId",
   authenticated,
-  reportController.allDataReportInSideBoard
+  reportController.allDataReportInSideBoard,
 );
 
 router.get(
   "/datapersonpost/:first_name/:last_name",
   authenticated,
-  reportController.personPostData
+  reportController.personPostData,
 );
 
 router.delete(
   "/deleteiduserreport/:reportId",
   authenticated,
-  reportController.deleteUserReportId
+  reportController.deleteUserReportId,
 );
 
 router.patch(
   "/changestatusreport/:reportId",
   authenticated,
-  reportController.changeStatusReport
+  reportController.changeStatusReport,
 );
 
 router.patch(
@@ -51,43 +51,49 @@ router.patch(
     { name: "image", maxCount: 9 },
     { name: "video", maxCount: 1 },
   ]),
-  reportController.changeDataIdUsereport
+  reportController.changeDataIdUsereport,
 );
 
 router.get(
   "/countallstatusreport",
   authenticated,
-  reportController.countAllStatusReport
+  reportController.countAllStatusReport,
 );
 
 router.get(
   "/userreporteddata",
   authenticated,
-  reportController.dataReportedOnly
+  reportController.dataReportedOnly,
 );
 
 router.get(
   "/userreportstatusacknowledged",
   authenticated,
-  reportController.dataAcknowledgedOnly
+  reportController.dataAcknowledgedOnly,
 );
 
 router.get(
   "/userreportstatusinprogress",
   authenticated,
-  reportController.dataInProgressOnly
+  reportController.dataInProgressOnly,
 );
 
 router.get(
   "/userreportstatuscompleted",
   authenticated,
-  reportController.dataCompletedOnly
+  reportController.dataCompletedOnly,
 );
 
 router.get(
   "/userreportstatuscanceled",
   authenticated,
-  reportController.dataCanceledOnly
+  reportController.dataCanceledOnly,
+);
+
+router.get(
+  "/userreport-mobile",
+  authenticated,
+  reportController.getDataByStatusForMobile,
 );
 
 module.exports = router;
