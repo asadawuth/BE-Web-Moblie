@@ -28,6 +28,21 @@ exports.createRequestWatchcctv = async (req, res, next) => {
       return next(createError("Missing required fields", 400));
     }
 
+    if (tel.length !== 10) {
+      return next(
+        createError(400, "Invalid phone number. Make sure it has 10 digits.")
+      );
+    }
+
+    if (nationalId.length !== 13) {
+      return next(
+        createError(
+          400,
+          "Invalid nationalId number. Make sure it has 13 digits."
+        )
+      );
+    }
+
     const image = req.file
       ? `${req.protocol}://${req.get("host")}/public/${req.file.filename}`
       : null;

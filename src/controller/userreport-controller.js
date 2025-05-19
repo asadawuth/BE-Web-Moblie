@@ -19,7 +19,7 @@ exports.createPostUserReport = async (req, res, next) => {
       req.files && req.files.image
         ? req.files.image.map(
             (file) =>
-              `${req.protocol}://${req.get("host")}/public/${file.filename}`,
+              `${req.protocol}://${req.get("host")}/public/${file.filename}`
           )
         : [];
 
@@ -175,7 +175,7 @@ exports.allDataReportInSideBoard = async (req, res, next) => {
 exports.personPostData = async (req, res, next) => {
   try {
     const { value, error } = findReportFormFirstNameLastName.validate(
-      req.params,
+      req.params
     );
     if (error) {
       return next(createError("Invalid input parameters.", 400));
@@ -290,7 +290,7 @@ exports.changeDataIdUsereport = async (req, res, next) => {
       const filePath = path.join(
         __dirname,
         "../../public",
-        path.basename(fileUrl.trim()),
+        path.basename(fileUrl.trim())
       );
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
@@ -308,8 +308,7 @@ exports.changeDataIdUsereport = async (req, res, next) => {
 
     const newImages =
       req.files?.image?.map(
-        (file) =>
-          `${req.protocol}://${req.get("host")}/public/${file.filename}`,
+        (file) => `${req.protocol}://${req.get("host")}/public/${file.filename}`
       ) || (reportToUpdate.image ? reportToUpdate.image.split(",") : []); // ตรวจสอบ null
 
     const newVideo =
@@ -357,7 +356,7 @@ exports.deleteUserReportId = async (req, res, next) => {
         const filePath = path.join(
           __dirname,
           "../../public",
-          path.basename(fileUrl.trim()),
+          path.basename(fileUrl.trim())
         );
         console.log("Attempting to delete file:", filePath);
 
@@ -473,6 +472,7 @@ exports.dataReportedOnly = async (req, res, next) => {
     const skip = (_page - 1) * _limit;
 
     // ใช้ Prisma Transaction เพื่อดึงข้อมูลและนับจำนวนในคำสั่งเดียว
+    // $transaction
     const [dataAllReport, totalCount] = await prisma.$transaction([
       prisma.postuserreport.findMany({
         where: { status: "แจ้ง" }, // เฉพาะสถานะ "แจ้ง"
@@ -514,7 +514,6 @@ exports.dataReportedOnly = async (req, res, next) => {
     // คำนวณจำนวนหน้าทั้งหมด
     const totalPages = Math.ceil(totalCount / _limit);
     const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-
     res.status(200).json({
       pages,
       totalPages,
