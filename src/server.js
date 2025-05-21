@@ -40,6 +40,7 @@ const requestWatchcctvRoute = require("./dataRoute/requestwatchcctv-route.js");
 const voiceSosRoute = require("./dataRoute/sosvoice-route.js");
 const integratedInformationRoute = require("./dataRoute/integratedInformation-route.js");
 const exportsDataExcel = require("./dataRoute/exportfileexcel-route.js");
+const dataForPopulation = require("./dataRoute/companies-route.js");
 
 app.use(morgan("dev"));
 app.use(express.json());
@@ -88,23 +89,10 @@ app.use(
 );
 app.use("/integratedinformation", integratedInformationRoute);
 app.use("/servicesfileexcel", exportsDataExcel);
+app.use("/dataUpdateforpopulation", dataForPopulation);
 
 app.use(notFoundMiddlewear);
 app.use(errorMiddleWear);
-
-// io.on("connection", (socket) => {
-//   console.log("🟢 Client connected:", socket.id);
-
-//   socket.on("joinRoom", (roomName) => {
-//     socket.join(roomName);
-//     console.log(`👥 Socket ${socket.id} joined room ${roomName}`);
-//     socket.emit("roomJoined", roomName); // แจ้ง client ว่าเข้าห้องแล้ว
-//   });
-
-//   socket.on("disconnect", () => {
-//     console.log("🔴 Client disconnected:", socket.id);
-//   });
-// });
 
 const PORT = process.env.PORT || 8888;
 

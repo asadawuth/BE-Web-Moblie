@@ -132,3 +132,10 @@
 //   userId        Int?
 //   user          user?    @relation(fields: [userId], references: [id])
 // }
+
+// model companies {
+//   key       String   @id
+//   value     String?
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
