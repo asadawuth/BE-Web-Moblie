@@ -21,9 +21,9 @@ exports.updatedDataInCompanies = async (req, res, next) => {
     }
 
     const { error, value } = valueForCompanies.validate(req.body);
-    if (error) {
-      return next(createError(400, "Error from input"));
-    }
+    // if (error) {
+    //   return next(createError(400, "Error from input"));
+    // }
 
     let imageFiles = req.files?.images || [];
 
@@ -58,7 +58,7 @@ exports.updatedDataInCompanies = async (req, res, next) => {
       where: { key },
       data: {
         value: JSON.stringify({
-          text: value.text,
+          text: value?.text || parsedValue.text || "",
           images: combinedImages,
         }),
       },
@@ -66,7 +66,7 @@ exports.updatedDataInCompanies = async (req, res, next) => {
 
     res.status(200).json({
       message: "Updated successfully",
-      data: result,
+      result,
     });
   } catch (err) {
     console.error("❌ Update failed:", err);
@@ -77,7 +77,7 @@ exports.updatedDataInCompanies = async (req, res, next) => {
 exports.dataForPopulation = async (req, res, next) => {
   try {
     const { key } = req.query;
-    const getdata = await prisma.companies.findMany({
+    const getdata = await prisma.companies.findFirst({
       where: {
         key: key,
       },
@@ -110,10 +110,25 @@ exports.deleteImage = async (req, res, next) => {
 
     const oldImages = parsedValue.images || [];
 
-    // ลบเฉพาะ imageUrl ที่ส่งมา
     const updatedImages = oldImages.filter((url) => url !== imageUrl);
 
-    // อัปเดตข้อมูล
+    const deleteFile = (fileUrl) => {
+      if (fileUrl) {
+        const filePath = path.join(
+          __dirname,
+          "../../public",
+          path.basename(fileUrl.trim())
+        );
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+    };
+
+    if (oldImages.includes(imageUrl)) {
+      deleteFile(imageUrl);
+    }
+
     const result = await prisma.companies.update({
       where: { key },
       data: {
