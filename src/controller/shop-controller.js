@@ -28,7 +28,7 @@ exports.createPostShop = async (req, res, next) => {
       req.files && req.files.image
         ? req.files.image.map(
             (file) =>
-              `${req.protocol}://${req.get("host")}/public/${file.filename}`
+              `${req.protocol}://${req.get("host")}/public/${file.filename}`,
           )
         : [];
 
@@ -89,7 +89,7 @@ exports.editsPostShop = async (req, res, next) => {
 
     if (req.user.id !== shopIdToUpdate.userId) {
       return next(
-        createError("Permission denied: You cannot edit this shop", 403)
+        createError("Permission denied: You cannot edit this shop", 403),
       );
     }
 
@@ -97,7 +97,7 @@ exports.editsPostShop = async (req, res, next) => {
       const filePath = path.join(
         __dirname,
         "../../public",
-        path.basename(fileUrl.trim())
+        path.basename(fileUrl.trim()),
       );
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
@@ -110,7 +110,8 @@ exports.editsPostShop = async (req, res, next) => {
 
     const newImages =
       req.files?.image?.map(
-        (file) => `${req.protocol}://${req.get("host")}/public/${file.filename}`
+        (file) =>
+          `${req.protocol}://${req.get("host")}/public/${file.filename}`,
       ) || shopIdToUpdate.image.split(",");
 
     const updatedShop = await prisma.datashop.update({
@@ -323,7 +324,7 @@ exports.deleteIdShop = async (req, res, next) => {
         const filePath = path.join(
           __dirname,
           "../../public",
-          path.basename(fileUrl.trim())
+          path.basename(fileUrl.trim()),
         );
         console.log("Attempting to delete file:", filePath);
 
@@ -939,6 +940,73 @@ exports.dataTotalAllStatus = async (req, res, next) => {
       totalAllStatus,
     });
   } catch (error) {
+    next(error);
+  }
+};
+
+exports.listAllShopForMobile = async (req, res, next) => {
+  try {
+    const { status } = req.query;
+    const _limit = parseInt(req.query._limit) || 10;
+    const _page = parseInt(req.query._page) || 1;
+    const skip = (_page - 1) * _limit;
+
+    const [lists, totalCount] = await prisma.$transaction([
+      prisma.datashop.findMany({
+        where: { status: status },
+        include: {
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+              profile: true,
+            },
+          },
+        },
+        orderBy: [{ createdAt: "desc" }],
+        skip,
+        take: _limit,
+      }),
+      prisma.datashop.count({
+        where: { status: status },
+      }),
+    ]);
+
+    const totalPages = Math.ceil(totalCount / _limit);
+
+    res.status(200).json({
+      pages: Array.from({ length: totalPages }, (_, i) => i + 1),
+      totalPages,
+      lists,
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+exports.listRecommendShopForMobile = async (req, res, next) => {
+  try {
+    const lists = prisma.datashop.findMany({
+      where: {
+        status: "สำเร็จ",
+      },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            profile: true,
+          },
+        },
+      },
+      take: 5,
+      orderBy: [{ createdAt: "desc" }],
+    });
+
+    res.status(200).json(lists);
+  } catch (error) {
+    console.log(error);
     next(error);
   }
 };

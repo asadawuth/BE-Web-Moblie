@@ -81,7 +81,7 @@ exports.changeDocumentRequestWatchcctv = async (req, res, next) => {
     const requestToChangeDataDocument = await prisma.requestwatchcctv.findFirst(
       {
         where: { id: parseInt(value.requestId) },
-      }
+      },
     );
 
     if (!requestToChangeDataDocument) {
@@ -92,7 +92,7 @@ exports.changeDocumentRequestWatchcctv = async (req, res, next) => {
       const filePath = path.join(
         __dirname,
         "../../public",
-        path.basename(fileUrl.trim())
+        path.basename(fileUrl.trim()),
       );
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
@@ -152,7 +152,7 @@ exports.updateStatusRequest = async (req, res, next) => {
     const requestToChangeDataDocument = await prisma.requestwatchcctv.findFirst(
       {
         where: { id: parseInt(value.requestId) },
-      }
+      },
     );
 
     if (!requestToChangeDataDocument) {
@@ -185,7 +185,7 @@ exports.sendMessageCassNotpass = async (req, res, next) => {
     const requestToChangeDataDocument = await prisma.requestwatchcctv.findFirst(
       {
         where: { id: parseInt(value.requestId) },
-      }
+      },
     );
 
     if (!requestToChangeDataDocument) {
@@ -251,7 +251,7 @@ exports.dataListNotpassAndSenddocument = async (req, res, next) => {
           ...displayTime,
           num: skip + index + 1,
         }; // ...rest ข้อมูลเดิม displayTime โคลนทับ
-      }
+      },
     );
 
     res.status(200).json({
@@ -561,6 +561,58 @@ exports.dataPerson = async (req, res, next) => {
 
     res.status(200).json(dataPersonRequest);
   } catch (error) {
+    next(error);
+  }
+};
+
+exports.getDataByStatusForMobile = async (req, res) => {
+  try {
+    const { status } = req.query;
+    const _limit = parseInt(req.query._limit) || 10;
+    const _page = parseInt(req.query._page) || 1;
+    const skip = (_page - 1) * _limit;
+
+    const [allData, totalCount] = await prisma.$transaction([
+      prisma.requestwatchcctv.findMany({
+        where: { status: status, userId: req.user.id },
+        include: {
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+              profile: true,
+            },
+          },
+        },
+        orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
+        skip,
+        take: _limit,
+      }),
+      prisma.requestwatchcctv.count({
+        where: { status: status },
+      }),
+    ]);
+
+    const reportList = allData.map((report) => {
+      const { createdAt, updatedAt, ...rest } = report;
+
+      const displayTime =
+        Math.abs(updatedAt.getTime() - createdAt.getTime()) < 10000
+          ? { type: "โพสเมื่อ", time: createdAt }
+          : { type: "อัพเดทเมื่อ", time: updatedAt };
+
+      return { ...rest, createdAt, updatedAt, ...displayTime };
+    });
+
+    const totalPages = Math.ceil(totalCount / _limit);
+
+    res.status(200).json({
+      pages: Array.from({ length: totalPages }, (_, i) => i + 1),
+      totalPages,
+      reportList,
+    });
+  } catch (error) {
+    console.log(error);
     next(error);
   }
 };

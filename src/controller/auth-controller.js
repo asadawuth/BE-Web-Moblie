@@ -142,7 +142,6 @@ exports.loginPopulation = async (req, res, next) => {
       user.status === "บล็อค" ||
       user.status === "resign" ||
       user.status === "ผู้ดูแลระบบ" ||
-      user.status === "เจ้าหน้าที่ซ่อมบำรุง" ||
       user.status === "ผู้ดำเนินการศูนย์บัญชาการ"
     ) {
       return res.status(401).json({ message: "User not activated" });
@@ -246,7 +245,7 @@ exports.updateProfile = async (req, res, next) => {
       const oldImagePath = path.join(
         __dirname,
         "../../public",
-        user.profile.split("/").pop()
+        user.profile.split("/").pop(),
       );
       fs.unlink(oldImagePath, (err) => {
         if (err) {
@@ -292,7 +291,7 @@ exports.changeProfileToDefaultImage = async (req, res, next) => {
       const oldImagePath = path.join(
         __dirname,
         "../../public",
-        user.profile.split("/").pop() // ดึงเฉพาะชื่อไฟล์มา
+        user.profile.split("/").pop(), // ดึงเฉพาะชื่อไฟล์มา
       );
       try {
         await fs.unlink(oldImagePath);
@@ -350,7 +349,7 @@ exports.getForDeleteIdLoginEmployee = async (req, res, next) => {
 exports.deleteIduserEmployee = async (req, res, next) => {
   try {
     const { value, error } = checkIdLoginEmployeeForDeleteShema.validate(
-      req.params
+      req.params,
     );
     if (error) {
       return next(error);
@@ -379,7 +378,7 @@ exports.deleteIduserEmployee = async (req, res, next) => {
 exports.deleteIdUserPoppulation = async (req, res, next) => {
   try {
     const { value, error } = checkIdLoginPoppulationForDeleteShema.validate(
-      req.params
+      req.params,
     );
     if (error) {
       return next(error);

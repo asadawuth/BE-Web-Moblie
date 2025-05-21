@@ -8,14 +8,14 @@ router.post(
   "/createshop",
   authenticated,
   uploadMiddleware.fields([{ name: "image", maxCount: 9 }]),
-  shopController.createPostShop
+  shopController.createPostShop,
 );
 
 router.patch(
   "/editshop/:datashopId",
   authenticated,
   uploadMiddleware.fields([{ name: "image", maxCount: 9 }]),
-  shopController.editsPostShop
+  shopController.editsPostShop,
 );
 
 router.get("/shoplist", authenticated, shopController.shopListPatination);
@@ -23,25 +23,25 @@ router.get("/shoplist", authenticated, shopController.shopListPatination);
 router.get(
   "/datapersonshoppost/:first_name/:last_name",
   authenticated,
-  shopController.personDataPostShop
+  shopController.personDataPostShop,
 );
 
 router.patch(
   "/changestatusshopid/:datashopId",
   authenticated,
-  shopController.changeStatusShopId
+  shopController.changeStatusShopId,
 );
 
 router.get(
   "/alldatausershopid/:datashopId",
   authenticated,
-  shopController.allDataIdShop
+  shopController.allDataIdShop,
 );
 
 router.delete(
   "/deletepostshopid/:datashopId",
   authenticated,
-  shopController.deleteIdShop
+  shopController.deleteIdShop,
 );
 
 router.get("/alltotalapprove", authenticated, shopController.totalApprove);
@@ -57,28 +57,40 @@ router.get("/datarentaplace", authenticated, shopController.dataRentAPlaceOnly);
 router.get(
   "/datastatusdocuments",
   authenticated,
-  shopController.dataSendDocumentOnly
+  shopController.dataSendDocumentOnly,
 );
 router.get(
   "/datastatuschecking",
   authenticated,
-  shopController.dataCheckingDocumentsOnly
+  shopController.dataCheckingDocumentsOnly,
 );
 router.get(
   "/datastatusadditional",
   authenticated,
-  shopController.dataAdditionalDocumentOnly
+  shopController.dataAdditionalDocumentOnly,
 );
 router.get("/datastatussuccess", authenticated, shopController.dataSuccessOnly);
 router.get(
   "/dataducumentnotpass",
   authenticated,
-  shopController.dataDocumentNotPassOnly
+  shopController.dataDocumentNotPassOnly,
 );
 router.get(
   "/datatotalallstatus",
   authenticated,
-  shopController.dataTotalAllStatus
+  shopController.dataTotalAllStatus,
+);
+
+router.get(
+  "/listAllShopForMobile",
+  authenticated,
+  shopController.listAllShopForMobile,
+);
+
+router.get(
+  "/listRecommendShopForMobile",
+  authenticated,
+  shopController.listRecommendShopForMobile,
 );
 
 module.exports = router;

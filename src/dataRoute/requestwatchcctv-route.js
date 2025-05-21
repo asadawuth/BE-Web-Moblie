@@ -8,68 +8,74 @@ router.post(
   "/documentsrequestcctv",
   authenticated,
   uploadMiddleware.single("image"),
-  requestWatchcctvController.createRequestWatchcctv
+  requestWatchcctvController.createRequestWatchcctv,
 );
 router.patch(
   "/editdatadocumentsforrequestwatchcctv/:requestId",
   authenticated,
   uploadMiddleware.single("image"),
-  requestWatchcctvController.changeDocumentRequestWatchcctv
+  requestWatchcctvController.changeDocumentRequestWatchcctv,
 );
 router.patch(
   "/changestatusrequestwatchcctv/:requestId",
   authenticated,
-  requestWatchcctvController.updateStatusRequest
+  requestWatchcctvController.updateStatusRequest,
 );
 router.patch(
   "/sendtextcassdocumentnotpass/:requestId",
   authenticated,
-  requestWatchcctvController.sendMessageCassNotpass
+  requestWatchcctvController.sendMessageCassNotpass,
 );
 router.get(
   "/listpaginationquestcctv",
   authenticated,
-  requestWatchcctvController.dataListNotpassAndSenddocument
+  requestWatchcctvController.dataListNotpassAndSenddocument,
 );
 router.get(
   "/datapersonrequest/:firstName/:lastName",
   authenticated,
-  requestWatchcctvController.dataNameRequest
+  requestWatchcctvController.dataNameRequest,
 );
 router.get(
   "/listpass",
   authenticated,
-  requestWatchcctvController.dataListPassOnly
+  requestWatchcctvController.dataListPassOnly,
 );
 router.get(
   "/listnotpass",
   authenticated,
-  requestWatchcctvController.dataListNotpassOnly
+  requestWatchcctvController.dataListNotpassOnly,
 );
 router.get(
   "/listsenddocument",
   authenticated,
-  requestWatchcctvController.dataListSenddocumentOnly
+  requestWatchcctvController.dataListSenddocumentOnly,
 );
 router.get(
   "/datapersonrequestcassonly/:firstName/:lastName",
   authenticated,
-  requestWatchcctvController.dataPersonCassPass
+  requestWatchcctvController.dataPersonCassPass,
 );
 router.get(
   "/datatotalandcountallstatus",
   authenticated,
-  requestWatchcctvController.totalAllData
+  requestWatchcctvController.totalAllData,
 );
 router.get(
   "/datapassonly/:firstName/:lastName",
   authenticated,
-  requestWatchcctvController.dataPersonPassOnly
+  requestWatchcctvController.dataPersonPassOnly,
 );
 router.get(
   "/alldatapersonrander",
   authenticated,
-  requestWatchcctvController.dataPerson
+  requestWatchcctvController.dataPerson,
+);
+
+router.get(
+  "/userrequestcctv-mobile",
+  authenticated,
+  requestWatchcctvController.getDataByStatusForMobile,
 );
 
 module.exports = router;

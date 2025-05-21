@@ -760,7 +760,7 @@ exports.getDataByStatusForMobile = async (req, res) => {
 
     const [dataAllReport, totalCount] = await prisma.$transaction([
       prisma.postuserreport.findMany({
-        where: { status: status },
+        where: { status: status, userId: req.user.id },
         include: {
           user: {
             select: {

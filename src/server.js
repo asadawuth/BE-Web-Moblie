@@ -21,7 +21,7 @@ app.use(
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
-  })
+  }),
 );
 
 app.use("/public", express.static("public"));
@@ -51,7 +51,7 @@ app.use(
     req.io = io;
     next();
   },
-  userReportRoute
+  userReportRoute,
 );
 app.use(
   "/commentidreport",
@@ -59,7 +59,7 @@ app.use(
     req.io = io;
     next();
   },
-  commentReportIdRoute
+  commentReportIdRoute,
 );
 app.use(
   "/aboutshop",
@@ -67,7 +67,7 @@ app.use(
     req.io = io;
     next();
   },
-  shopRoute
+  shopRoute,
 );
 app.use("/commentsshop", commentShopRoute);
 app.use(
@@ -76,7 +76,7 @@ app.use(
     req.io = io;
     next();
   },
-  requestWatchcctvRoute
+  requestWatchcctvRoute,
 );
 app.use(
   "/voicesos",
@@ -84,7 +84,7 @@ app.use(
     req.io = io;
     next();
   },
-  voiceSosRoute
+  voiceSosRoute,
 );
 app.use("/integratedinformation", integratedInformationRoute);
 app.use("/servicesfileexcel", exportsDataExcel);
@@ -108,6 +108,8 @@ app.use(errorMiddleWear);
 
 const PORT = process.env.PORT || 8888;
 
-server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+server.listen(PORT, "0.0.0.0", () =>
+  console.log(`Server is running on port ${PORT}`),
+);
 
 // **
