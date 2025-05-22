@@ -6,6 +6,7 @@ const {
   findShopFormFirstNameLastName,
   checkIdDataShopSchema,
 } = require("../validator/validator-shop.js");
+const geolib = require("geolib");
 
 exports.createPostShop = async (req, res, next) => {
   try {
@@ -987,7 +988,14 @@ exports.listAllShopForMobile = async (req, res, next) => {
 
 exports.listRecommendShopForMobile = async (req, res, next) => {
   try {
-    const lists = prisma.datashop.findMany({
+    const userLat = parseFloat(req.query.lat);
+    const userLon = parseFloat(req.query.lon);
+
+    if (isNaN(userLat) || isNaN(userLon)) {
+      return res.status(400).json({ message: "Invalid lat/lon" });
+    }
+
+    const shops = await prisma.datashop.findMany({
       where: {
         status: "สำเร็จ",
       },
@@ -1000,11 +1008,28 @@ exports.listRecommendShopForMobile = async (req, res, next) => {
           },
         },
       },
-      take: 5,
       orderBy: [{ createdAt: "desc" }],
     });
 
-    res.status(200).json(lists);
+    const shopsWithDistance = shops
+      .map((shop) => {
+        const shopLat = parseFloat(shop.latitude);
+        const shopLon = parseFloat(shop.longtitude);
+
+        const distance = geolib.getDistance(
+          { latitude: userLat, longitude: userLon },
+          { latitude: shopLat, longitude: shopLon },
+        );
+
+        return {
+          ...shop,
+          distanceKm: distance / 1000,
+        };
+      })
+      .sort((a, b) => a.distanceKm - b.distanceKm)
+      .slice(0, 5);
+
+    res.status(200).json(shopsWithDistance);
   } catch (error) {
     console.log(error);
     next(error);

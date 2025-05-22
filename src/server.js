@@ -41,6 +41,7 @@ const voiceSosRoute = require("./dataRoute/sosvoice-route.js");
 const integratedInformationRoute = require("./dataRoute/integratedInformation-route.js");
 const exportsDataExcel = require("./dataRoute/exportfileexcel-route.js");
 const dataForPopulation = require("./dataRoute/companies-route.js");
+const hardwareController = require("./controller/hardware-controller.js");
 
 app.use(morgan("dev"));
 app.use(express.json());
@@ -93,6 +94,8 @@ app.use("/dataUpdateforpopulation", dataForPopulation);
 
 app.use(notFoundMiddlewear);
 app.use(errorMiddleWear);
+
+hardwareController.getValueHardware();
 
 const PORT = process.env.PORT || 8888;
 
